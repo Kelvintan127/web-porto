@@ -1,11 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a192f;
+  --foreground: #ffffff;
 }
+
+/* Your other custom styles */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -14,8 +17,63 @@
   }
 }
 
+@keyframes floating {
+  0% {
+    transform: translate(0, 0px);
+  }
+  50% {
+    transform: translate(0, 20px);
+  }
+  100% {
+    transform: translate(0, -0px);
+  }
+}
+
+.hero-image {
+  animation-name: floating;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.clip-circle {
+  clip-path: circle(50% at 50% 50%);
+}
+
+.button-color {
+  background-color: rgb(17 24 39 / 0.5);
+  border-width: 2px;
+  border-color: rgb(156 163 175 / var(--tw-border-opacity, 1)) /* #9ca3af */;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transition-duration: 300ms;
+  border-radius: 0.5rem;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  font-weight: 600;
+  font-size: 1rem /* 16px */;
+  line-height: 1.5rem /* 24px */;
+  padding-left: 1rem /* 16px */;
+  padding-right: 1rem /* 16px */;
+  padding-top: 0.5rem /* 8px */;
+  padding-bottom: 0.5rem /* 8px */;
+  width: 100%;
+}
+
+.button-color:hover {
+  --tw-scale-x: 1.05;
+  --tw-scale-y: 1.05;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1)) /* #374151 */;
 }
