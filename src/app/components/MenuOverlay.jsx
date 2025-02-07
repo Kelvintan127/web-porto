@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-scroll";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaGithub, FaInstagram, FaLinkedin, FaTimes } from "react-icons/fa";
 
 const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
   const overlayVariants = {
@@ -34,21 +35,9 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
   };
 
   const socialLinks = [
-    {
-      icon: "github",
-      url: "https://github.com/Kelvintan127",
-      label: "GitHub",
-    },
-    {
-      icon: "instagram",
-      url: "https://instagram.com/kelvintan27_",
-      label: "Instagram",
-    },
-    {
-      icon: "linkedin",
-      url: "https://linkedin.com/in/kelvin-tan-21b559220",
-      label: "LinkedIn",
-    },
+    { icon: <FaGithub className="w-8 h-8" />, url: "https://github.com/kelvintan127" },
+    { icon: <FaInstagram className="w-8 h-8" />, url: "https://instagram.com/kelvintan27_" },
+    { icon: <FaLinkedin className="w-8 h-8" />, url: "https://linkedin.com/in/kelvin-tan-21b559220" },
   ];
 
   return (
@@ -192,13 +181,7 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <box-icon
-                    type="logo"
-                    name={social.icon}
-                    color="currentColor"
-                    size="md"
-                    className="w-8 h-8"
-                  />
+                  {social.icon}
                 </motion.a>
               ))}
             </motion.div>

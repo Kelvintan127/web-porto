@@ -70,7 +70,7 @@ const About = () => {
 
             {/* Description */}
             <p className="text-gray-400 leading-relaxed">
-              I'm a front-end developer with experience in building responsive and optimized sites. Currently, I'm focused on building accessible web applications while learning back-end technologies.
+              I&apos;m a front-end developer with experience in building responsive and optimized sites. Currently, I&apos;m focused on building accessible web applications while learning back-end technologies.
             </p>
 
             {/* Skills Section */}

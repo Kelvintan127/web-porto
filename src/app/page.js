@@ -1,12 +1,11 @@
 "use client";
-import Navbar from "@/app/components/Navbar";
-import HomeSection from "./components/HomeSection";
+import Navbar from "@/app/components/Navbar.jsx";
+import HomeSection from "./components/HomeSection.jsx";
 import Image from "next/image";
-import Contact from "./components/Contact";
-import About from "./components/About";
-import BackgroundAnimation from "./components/BackgroundAnimation";
-import Project from "./components/Project";
-import Footer from "./components/Footer";
+import Contact from "./components/Contact.jsx";
+import About from "./components/About.jsx";
+import Project from "./components/Project.jsx";
+import Footer from "./components/Footer.jsx";
 export default function Home() {
   return (
     <main className="min-h-screen w-full relative">

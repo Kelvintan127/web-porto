@@ -2,8 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-scroll";
 import { motion } from "framer-motion";
+import dynamic from 'next/dynamic';
 import MenuOverlay from "./MenuOverlay";
-import { BoxIcon } from "boxicons";
+import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
+
+const DynamicBoxIcon = dynamic(() => import('boxicons').then(mod => mod.BoxIcon), {
+  ssr: false
+});
 
 const Navbar = () => {
   const [openNav, setOpenNav] = useState(false);
@@ -18,42 +23,44 @@ const Navbar = () => {
   ];
 
   const socialLinks = [
-    { icon: "github", url: "https://github.com/yourusername" },
-    { icon: "instagram", url: "https://instagram.com/kelvintan27_" },
-    { icon: "linkedin", url: "https://linkedin.com/in/kelvin-tan-21b559220" },
+    { icon: <FaGithub className="w-6 h-6" />, url: "https://github.com/kelvintan127" },
+    { icon: <FaInstagram className="w-6 h-6" />, url: "https://instagram.com/kelvintan27_" },
+    { icon: <FaLinkedin className="w-6 h-6" />, url: "https://linkedin.com/in/kelvin-tan-21b559220" },
   ];
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+    if (typeof window !== 'undefined') {
+      const handleScroll = () => {
+        setScrolled(window.scrollY > 50);
 
-      // Find active section
-      const sections = navLinks.map((link) => link.path);
-      let currentSection = "";
+        // Find active section
+        const sections = navLinks.map((link) => link.path);
+        let currentSection = "";
 
-      sections.forEach((section) => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (
-            rect.top <= window.innerHeight / 2 &&
-            rect.bottom >= window.innerHeight / 2
-          ) {
-            currentSection = section;
+        sections.forEach((section) => {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (
+              rect.top <= window.innerHeight / 2 &&
+              rect.bottom >= window.innerHeight / 2
+            ) {
+              currentSection = section;
+            }
           }
+        });
+
+        if (currentSection) {
+          setActiveSection(currentSection);
+        } else if (window.scrollY === 0) {
+          setActiveSection("home");
         }
-      });
+      };
 
-      if (currentSection) {
-        setActiveSection(currentSection);
-      } else if (window.scrollY === 0) {
-        setActiveSection("home");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
-    return () => window.removeEventListener("scroll", handleScroll);
+      window.addEventListener("scroll", handleScroll);
+      handleScroll();
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
   }, []);
 
   return (
@@ -100,7 +107,7 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* Social Links */}
+            {/* Social Links section */}
             <div className="hidden md:flex items-center gap-4">
               {socialLinks.map((social, index) => (
                 <a
@@ -109,15 +116,8 @@ const Navbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-white transition-colors duration-300"
-                  aria-label={social.label}
                 >
-                  <box-icon
-                    type="logo"
-                    name={social.icon}
-                    color="currentColor"
-                    size="md"
-                    className="w-6 h-6"
-                  />
+                  {social.icon}
                 </a>
               ))}
             </div>
