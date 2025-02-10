@@ -111,7 +111,7 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
               </motion.div>
             </div>
 
-            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-450px)]">
               <nav className="space-y-6">
                 {navLinks.map((nav, index) => (
                   <motion.div
@@ -168,7 +168,7 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
 
             <motion.div
               variants={itemVariants}
-              className="flex justify-center items-center gap-6 pb-12"
+              className="flex justify-center items-center gap-6 py-12"
             >
               {socialLinks.map((social, index) => (
                 <motion.a
