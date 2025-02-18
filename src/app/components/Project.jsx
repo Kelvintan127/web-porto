@@ -42,16 +42,19 @@ const Project = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="bg-gray-900/50 rounded-xl backdrop-blur-sm border border-gray-800/50 overflow-hidden"
+            className="bg-gray-900/50 rounded-xl backdrop-blur-sm border border-gray-800/50 overflow-hidden group"
           >
-            <div className="relative w-full h-48 overflow-hidden">
+            <div className="relative w-full h-64 overflow-hidden bg-gray-800">
               <img
                 src={project.image}
                 alt={project.title}
-                className="object-cover w-full h-full hover:scale-110 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-fill p-4 group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
 
+            {/* Rest of your card content remains the same */}
             <div className="p-6">
               <h3 className="text-xl font-bold mb-3 text-gray-100">
                 {project.title}

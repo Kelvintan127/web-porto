@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-scroll";
 
 const Skills = ["HTML", "CSS", "JavaScript", "React", "Next.js", "Tailwind CSS", "C#", "C++"];
 const Roles = ["Frontend Developer", "Backend Developer", "Fullstack Developer"];
@@ -42,7 +43,7 @@ const About = () => {
               <img
                 src="/assets/Kelvin Tan Image.png"
                 alt="Developer portrait"
-                className="relative z-10 w-52 h-64 mx-auto rounded-full object-cover object-top shadow-lg"
+                className="relative z-10 w-56 h-64 mx-auto rounded-full object-cover object-top shadow-lg"
               />
               
               {/* Floating shapes */}
@@ -100,12 +101,15 @@ const About = () => {
             
             {/* CTA Button */}
             <div className="pt-4">
-              <a 
-                href="#contact" 
-                className=" px-6 py-3 rounded-lg bg-gray-900/50 border border-gray-400 text-gray-300 hover:bg-gray-800 hover:border-gray-400 font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center gap-2"
+              <Link
+                to="contact"
+                spy={true}
+                smooth={true}
+                duration={500}
+                className="inline-block px-6 py-3 rounded-lg bg-gray-900/50 border border-gray-400 text-gray-300 hover:bg-gray-800 hover:border-gray-400 font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 Get in Touch
-              </a>
+              </Link>
             </div>
           </motion.div>
         </div>
