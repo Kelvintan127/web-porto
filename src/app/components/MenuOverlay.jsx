@@ -37,7 +37,7 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
   const socialLinks = [
     { icon: <FaGithub className="w-8 h-8" />, url: "https://github.com/kelvintan127" },
     { icon: <FaInstagram className="w-8 h-8" />, url: "https://instagram.com/kelvintan27_" },
-    { icon: <FaLinkedin className="w-8 h-8" />, url: "https://linkedin.com/in/kelvin-tan-21b559220" },
+    { icon: <FaLinkedin className="w-8 h-8" />, url: "https://linkedin.com/in/kelvintan127" },
   ];
 
   return (

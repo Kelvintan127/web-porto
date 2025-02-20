@@ -25,7 +25,7 @@ const Navbar = () => {
   const socialLinks = [
     { icon: <FaGithub className="w-6 h-6" />, url: "https://github.com/kelvintan127" },
     { icon: <FaInstagram className="w-6 h-6" />, url: "https://instagram.com/kelvintan27_" },
-    { icon: <FaLinkedin className="w-6 h-6" />, url: "https://linkedin.com/in/kelvin-tan-21b559220" },
+    { icon: <FaLinkedin className="w-6 h-6" />, url: "https://linkedin.com/in/kelvintan127" },
   ];
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import { Link } from "react-scroll";
 import { ReactTyped } from "react-typed";
 import { motion } from "framer-motion";
 
-const LinkCV = "https://drive.google.com/file/d/15S6QCuiWKOhrMx0oS9B-OG_HZTXgQF0e/view?usp=drive_link";
+const LinkCV = "https://drive.google.com/file/d/1583m46NpYsrrSciTUs0Mehi0U4jbNpUO/view?usp=sharing";
 
 const HomeSection = () => {
   return (
