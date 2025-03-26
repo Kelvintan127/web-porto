@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import emailjs from "@emailjs/browser";
 
 const Contact = () => {
   const form = useRef();
@@ -13,26 +12,55 @@ const Contact = () => {
     setStatus({ type: "", message: "" });
 
     try {
-      const result = await emailjs.sendForm(
-        "service_doufufh",
-        "template_k7njj0l",
-        form.current,
-        "GYYIZfMo-y-eoZulf"
-      );
+      const formData = {
+        name: e.target.name.value,
+        email: e.target.email.value,
+        subject: e.target.subject.value,
+        message: e.target.message.value,
+      };
 
-      if (result.text === "OK") {
-        setStatus({
-          type: "success",
-          message: "Thank you! Your message has been sent successfully.",
-        });
-        form.current.reset();
+      // Send email
+      const emailResponse = await fetch('/api/mail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Send WhatsApp message via Fonnte
+      const whatsappResponse = await fetch('/api/fonnte', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: `New Contact Form Submission\n\nName: ${formData.name}\nEmail: ${formData.email}\nSubject: ${formData.subject}\n\nMessage:\n${formData.message}`,
+        }),
+      });
+
+      const emailData = await emailResponse.json();
+      const whatsappData = await whatsappResponse.json();
+
+      if (!emailResponse.ok) {
+        throw new Error(emailData.message || "Failed to send email");
       }
+
+      if (!whatsappResponse.ok) {
+        throw new Error(whatsappData.message || "Failed to send WhatsApp message");
+      }
+
+      setStatus({
+        type: "success",
+        message: "Thank you! Your message has been sent successfully.",
+      });
+      form.current.reset();
     } catch (error) {
       setStatus({
         type: "error",
-        message: "Oops! Something went wrong. Please try again later.",
+        message: error.message || "Oops! Something went wrong. Please try again later.",
       });
-      console.error("Email error:", error);
+      console.log("Contact error details:", error);
     } finally {
       setLoading(false);
     }
@@ -111,7 +139,7 @@ const Contact = () => {
               </div>
               <div>
                 <p className="font-semibold text-gray-200">Email</p>
-                <p className="text-gray-400">kelvintan127.kt@gmail.com</p>
+                <p className="text-gray-400">kelvin@klveen.com</p>
               </div>
             </div>
           </div>
