@@ -30,7 +30,7 @@ ${message}
       `,
       html: `
 <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; color: #333;">
-  <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">New Contact Form Message From Portfolio Website</h2>
+  <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">New Contact Form Message</h2>
   
   <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
     <p style="margin: 10px 0;"><strong style="color: #1e40af;">Name:</strong> ${name}</p>
