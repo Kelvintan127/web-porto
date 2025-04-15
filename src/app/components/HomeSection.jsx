@@ -71,9 +71,14 @@ const HomeSection = () => {
                 Contact Me
               </button>
             </Link>
-              <a href={LinkCV} className="sm:w-auto button-color">
-                Download CV
-              </a>
+            <a 
+              href="/assets/Kelvin Tan CV.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="sm:w-auto button-color"
+            >
+              Download CV
+            </a>
           </motion.div>
         </motion.div>
 

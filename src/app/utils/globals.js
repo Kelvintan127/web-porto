@@ -122,11 +122,10 @@ export const experiences = [
     period: "June 2024 - September 2024",
     description: [
       "Volunteered to develop a Laravel web application for an attendance system for Longevitology Therapy.",
-      "Developed the attendance system utilizing barcode scanning technology",
       "Managed data persistence with MySQL database systems integrated with the hosting provider.",
-      "Implemented user authentication using OAuth."
+      "Implemented user authentication using RBAC (Role Based Access Control)."
     ]
-  }
+  },
 ]
 
 export const projects = [
@@ -146,11 +145,22 @@ export const projects = [
     description: [
       "A simple Laravel attendance system project using Laravel",
       "Developed secure, scalable APIs with role-based access control (RBAC).",
-      "Ensure security using authentication (Oauth)",
-      "Applied best practices in making efficient .Net core application"
     ],
     tech: ["PHP", "Laravel", "MySQL"],
     github: "https://csx.dhammamanggala.org/"
+  },
+  {
+    title: "Swift POS",
+    description: [
+      "Fullstack Point of Sale system with mobile app and admin dashboard",
+      "Built mobile cashier interface with React Native for iOS and Android",
+      "Developed RESTful API backend using Express.js and PostgreSQL",
+      "Implemented secure JWT authentication for secure API access",
+      "Integrated Midtrans payment gateway for secure transactions",
+      "Created admin panel with React for inventory and sales analytics"
+    ],
+    tech: ["React Native", "Express.js", "React", "PostgreSQL", "Midtrans"],
+    github: "https://github.com/kelvintan/kasirku-pos"
   }
 ]
 
@@ -212,8 +222,7 @@ export const skills = [
       { name: "REST API", level: "Advanced" },
       { name: "WebSocket", level: "Advanced" },
       { name: "PostgreSQL", level: "Advanced" },
-      { name: "MongoDB", level: "Advanced" },
-      { name: "Redis", level: "Advanced" }
+      { name: "MongoDB", level: "Advanced" }
     ]
   },
   {
