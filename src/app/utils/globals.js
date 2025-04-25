@@ -149,19 +149,19 @@ export const projects = [
     tech: ["PHP", "Laravel", "MySQL"],
     github: "https://csx.dhammamanggala.org/"
   },
-  {
-    title: "Swift POS",
-    description: [
-      "Fullstack Point of Sale system with mobile app and admin dashboard",
-      "Built mobile cashier interface with React Native for iOS and Android",
-      "Developed RESTful API backend using Express.js and PostgreSQL",
-      "Implemented secure JWT authentication for secure API access",
-      "Integrated Midtrans payment gateway for secure transactions",
-      "Created admin panel with React for inventory and sales analytics"
-    ],
-    tech: ["React Native", "Express.js", "React", "PostgreSQL", "Midtrans"],
-    github: "https://github.com/kelvintan/kasirku-pos"
-  }
+  // {
+  //   title: "Swift POS",
+  //   description: [
+  //     "Fullstack Point of Sale system with mobile app and admin dashboard",
+  //     "Built mobile cashier interface with React Native for iOS and Android",
+  //     "Developed RESTful API backend using Express.js and PostgreSQL",
+  //     "Implemented secure JWT authentication for secure API access",
+  //     "Integrated Midtrans payment gateway for secure transactions",
+  //     "Created admin panel with React for inventory and sales analytics"
+  //   ],
+  //   tech: ["React Native", "Express.js", "React", "PostgreSQL", "Midtrans"],
+  //   github: "https://github.com/kelvintan/kasirku-pos"
+  // }
 ]
 
 export const publications = [
