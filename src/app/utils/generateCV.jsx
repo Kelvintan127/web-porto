@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
 });
 
 export const CV = () => {
-  const currentGPA = gpaProgression[gpaProgression.length - 1].gpa;
+  const currentGPA = 3.39;
   
   return (
     <Document>

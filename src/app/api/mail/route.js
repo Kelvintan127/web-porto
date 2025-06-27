@@ -59,7 +59,7 @@ ${message}
   } catch (error) {
     console.error('Email error:', error);
     return NextResponse.json(
-      { message: "Failed to send email" },
+      { message: "Failed to send email", error: error.message },
       { status: 500 }
     );
   }

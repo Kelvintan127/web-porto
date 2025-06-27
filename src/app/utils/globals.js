@@ -9,11 +9,12 @@ import {
 
 export const gpaProgression = [
   { semester: 1, gpa: 3.73 },
-  { semester: 2, gpa: 3.62 },
-  { semester: 3, gpa: 3.33 },
-  { semester: 4, gpa: 3.33 },
-  { semester: 5, gpa: 3.15 },
-  { semester: 6, gpa: 3.29 },
+  { semester: 2, gpa: 3.50 },
+  { semester: 3, gpa: 2.83 },
+  { semester: 4, gpa: 3.32 },
+  { semester: 5, gpa: 2.33 },
+  { semester: 6, gpa: 3.94 },
+  { semester: 7, gpa: 3.89 },
 ];
 
 export const activities = [
