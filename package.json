@@ -12,6 +12,7 @@
     "@emailjs/browser": "^4.4.1",
     "@fontsource/inter": "^5.1.1",
     "@heroicons/react": "^2.2.0",
+    "@iconify/react": "^6.0.0",
     "@react-pdf/renderer": "^4.2.2",
     "autoprefixer": "^10.4.20",
     "boxicons": "^2.1.4",

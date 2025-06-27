@@ -45,10 +45,10 @@ const HomeSection = () => {
               className="space-y-2"
             >
               <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-200">
-                I&apos;m a undergraduate student
+                I&apos;m a freshgraduate student
               </h2>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-300">
-                at Binus University
+                from Binus University
               </h2>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-400">
                 Computer Science Major

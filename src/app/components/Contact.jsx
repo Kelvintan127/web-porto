@@ -60,6 +60,16 @@ const Contact = () => {
         type: "error",
         message: error.message || "Oops! Something went wrong. Please try again later.",
       });
+      await fetch('/api/fonnte', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: `Error Sending Message From Website Portfolio\n\nName: ${formData.name}\nEmail: ${formData.email}\nSubject: ${formData.subject}\n\nMessage:\n${formData.message}\nError Details:\n${error.message}`,
+        }),
+      });
+
       console.log("Contact error details:", error);
     } finally {
       setLoading(false);
