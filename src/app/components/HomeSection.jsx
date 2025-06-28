@@ -8,10 +8,9 @@ const LinkCV = "https://drive.google.com/file/d/1583m46NpYsrrSciTUs0Mehi0U4jbNpU
 const HomeSection = () => {
   return (
     <section
-      className="relative w-full max-w-[1300px] flex items-center justify-center px-4 sm:px-6 md:px-8 min-h-screen"
+      className="relative w-full max-w-[1300px] flex items-center justify-center px-4 sm:px-6 md:px-8 min-h-screen dark:bg-transparent light:bg-white/80"
       name="home"
     >
-      
       <div className="flex flex-col-reverse md:flex-row w-full gap-8 md:gap-12">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -34,7 +33,7 @@ const HomeSection = () => {
                 loopCount={0}
                 showCursor
                 cursorChar="|"
-                className="text-4xl sm:text-5xl md:text-6xl font-bold font-poppins bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 text-transparent bg-clip-text"
+                className="text-4xl sm:text-5xl md:text-6xl font-bold font-poppins bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 dark:from-blue-300 dark:via-blue-500 dark:to-blue-700 text-transparent bg-clip-text"
               />
             </div>
 
@@ -44,13 +43,13 @@ const HomeSection = () => {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="space-y-2"
             >
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-200">
-                I&apos;m a freshgraduate student
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-700 dark:text-gray-200">
+                I'm a freshgraduate student
               </h2>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-300">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-600 dark:text-gray-300">
                 from Binus University
               </h2>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-400">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-500 dark:text-gray-400">
                 Computer Science Major
               </h2>
             </motion.div>
@@ -63,22 +62,34 @@ const HomeSection = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
           >
             <Link to="contact" smooth={true} duration={400}>
-              <button
-                className="px-4 py-2 w-full sm:w-auto text-base font-semibold rounded-lg 
-    bg-gradient-to-r from-blue-300 via-purple-600 to-blue-600 
-    animate-gradient-x transform hover:scale-105 transition-all duration-300 text-white"
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 w-full sm:w-auto text-base font-semibold rounded-lg 
+                bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 
+                dark:from-blue-300 dark:via-blue-500 dark:to-blue-700 
+                text-white shadow-lg hover:shadow-xl
+                transform transition-all duration-300"
               >
                 Contact Me
-              </button>
+              </motion.button>
             </Link>
-            <a 
+            <motion.a 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               href="/assets/Kelvin Tan CV.pdf" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="sm:w-auto button-color"
+              className="px-6 py-3 text-base font-semibold rounded-lg
+                bg-blue-50 dark:bg-gray-900/50 
+                border border-blue-200 dark:border-gray-400 
+                text-blue-700 dark:text-gray-300 
+                hover:bg-blue-100 dark:hover:bg-gray-800 
+                shadow-lg hover:shadow-xl
+                transition-all duration-300"
             >
               Download CV
-            </a>
+            </motion.a>
           </motion.div>
         </motion.div>
 
@@ -88,16 +99,15 @@ const HomeSection = () => {
           transition={{ duration: 0.8 }}
           className="flex-1 flex items-center justify-center"
         >
-          <img
-            className="w-[70%] md:w-[90%] h-auto object-contain drop-shadow-2xl transform hover:scale-105 transition-all duration-500"
+          <motion.img
+            whileHover={{ scale: 1.05 }}
+            className="w-[70%] md:w-[90%] h-auto object-contain drop-shadow-2xl transition-all duration-500"
             src="assets/Hero3.png"
             alt="Hero illustration"
             loading="eager"
           />
         </motion.div>
       </div>
-
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black/20 -z-10" />
     </section>
   );
 };

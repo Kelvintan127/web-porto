@@ -116,9 +116,9 @@ const ProjectCard = ({ project }) => (
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.5 }}
-        className="bg-gray-900/50 rounded-xl backdrop-blur-sm border border-gray-800/50 overflow-hidden group"
+        className="bg-white dark:bg-gray-900/50 rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-800/50 overflow-hidden group hover:shadow-xl transition-all duration-300"
     >
-        <div className="relative w-full h-64 overflow-hidden bg-gray-800">
+        <div className="relative w-full h-64 overflow-hidden bg-gray-100 dark:bg-gray-800">
             <img
                 src={project.image}
                 alt={project.title}
@@ -128,11 +128,23 @@ const ProjectCard = ({ project }) => (
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
         <div className="p-6">
-            <h3 className="text-xl font-bold mb-3 text-gray-100">{project.title}</h3>
-            <p className="text-gray-400 text-sm mb-4 line-clamp-3">{project.description}</p>
+            <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                {project.title}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300">
+                {project.description}
+            </p>
             <div className="flex flex-wrap gap-2 mb-6">
                 {project.technologies.map((tech, idx) => (
-                    <span key={idx} className="px-2 py-1 text-xs bg-gray-800/50 border-gray-400 rounded-full text-gray-300">
+                    <span
+                        key={idx}
+                        className="px-3 py-1 text-xs rounded-full
+                        bg-gray-100 dark:bg-gray-800/50
+                        text-gray-600 dark:text-gray-400
+                        border border-gray-200 dark:border-gray-700
+                        group-hover:border-blue-500 dark:group-hover:border-blue-400
+                        transition-all duration-300"
+                    >
                         {tech}
                     </span>
                 ))}
@@ -144,7 +156,12 @@ const ProjectCard = ({ project }) => (
                     href={project.liveLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`px-4 py-2 rounded-lg bg-gray-900/50 border border-white text-gray-300 hover:bg-gray-800 hover:border-white font-semibold transition-all duration-300 ${!project.liveLink && "opacity-50 cursor-not-allowed"}`}
+                    className={`px-4 py-2 rounded-lg
+                    bg-blue-500 hover:bg-blue-600
+                    dark:bg-blue-600 dark:hover:bg-blue-700
+                    text-white font-semibold
+                    transition-all duration-300
+                    ${!project.liveLink && "opacity-50 cursor-not-allowed"}`}
                 >
                     Live Demo
                 </motion.a>
@@ -155,7 +172,11 @@ const ProjectCard = ({ project }) => (
                         href={project.githubLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-4 py-2 rounded-lg bg-gray-900/50 border border-white text-gray-300 hover:bg-gray-800 hover:border-white font-semibold transition-all duration-300"
+                        className="px-4 py-2 rounded-lg
+                        bg-gray-800 hover:bg-gray-900
+                        dark:bg-gray-700 dark:hover:bg-gray-600
+                        text-white font-semibold
+                        transition-all duration-300"
                     >
                         GitHub
                     </motion.a>
