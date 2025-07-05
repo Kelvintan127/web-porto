@@ -3,8 +3,6 @@ import { Link } from "react-scroll";
 import { ReactTyped } from "react-typed";
 import { motion } from "framer-motion";
 
-const LinkCV = "https://drive.google.com/file/d/1583m46NpYsrrSciTUs0Mehi0U4jbNpUO/view?usp=sharing";
-
 const HomeSection = () => {
   return (
     <section
@@ -44,13 +42,13 @@ const HomeSection = () => {
               className="space-y-2"
             >
               <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-700 dark:text-gray-200">
-                I'm a freshgraduate student
+                I'm a fresh graduate
               </h2>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-600 dark:text-gray-300">
                 from Binus University
               </h2>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-500 dark:text-gray-400">
-                Computer Science Major
+                majoring in Computer Science
               </h2>
             </motion.div>
           </div>
