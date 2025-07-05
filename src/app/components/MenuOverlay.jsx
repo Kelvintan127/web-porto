@@ -1,9 +1,17 @@
 import React from "react";
 import { Link } from "react-scroll";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaGithub, FaInstagram, FaLinkedin, FaTimes } from "react-icons/fa";
+import { useTheme } from "../context/ThemeContext";
+import {
+  FaGithub,
+  FaInstagram,
+  FaLinkedin,
+  FaSun,
+  FaMoon,
+} from "react-icons/fa";
 
 const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
+  const { theme, toggleTheme } = useTheme();
   const overlayVariants = {
     closed: {
       opacity: 0,
@@ -35,9 +43,18 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
   };
 
   const socialLinks = [
-    { icon: <FaGithub className="w-8 h-8" />, url: "https://github.com/kelvintan127" },
-    { icon: <FaInstagram className="w-8 h-8" />, url: "https://instagram.com/kelvintan27_" },
-    { icon: <FaLinkedin className="w-8 h-8" />, url: "https://linkedin.com/in/kelvintan127" },
+    {
+      icon: <FaGithub className="w-8 h-8" />,
+      url: "https://github.com/kelvintan127",
+    },
+    {
+      icon: <FaInstagram className="w-8 h-8" />,
+      url: "https://instagram.com/kelvintan27_",
+    },
+    {
+      icon: <FaLinkedin className="w-8 h-8" />,
+      url: "https://linkedin.com/in/kelvintan127",
+    },
   ];
 
   return (
@@ -67,7 +84,10 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
         </div>
 
         {/* Content Container */}
-        <div className="fixed inset-0 z-10 overflow-y-auto" style={{ position: "fixed", zIndex: 3 }}>
+        <div
+          className="fixed inset-0 z-10 overflow-y-auto"
+          style={{ position: "fixed", zIndex: 3 }}
+        >
           <div className="min-h-screen">
             {/* Close Button */}
             <div className="flex justify-end p-6">
@@ -112,9 +132,10 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
                     >
                       <span
                         className={`relative z-10 text-3xl font-medium transition-colors duration-300
-                        ${activeSection === nav.path
-                          ? "text-blue-600 dark:text-blue-400"
-                          : "text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                        ${
+                          activeSection === nav.path
+                            ? "text-blue-600 dark:text-blue-400"
+                            : "text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
                         }`}
                       >
                         {nav.link}
@@ -148,6 +169,28 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
               </nav>
             </div>
 
+            {/* Theme Toggle Button */}
+            <div className="flex justify-center pt-4">
+            <motion.button
+              onClick={toggleTheme}
+              whileHover={{ scale: 1.1, rotate: 180 }}
+              whileTap={{ scale: 0.9 }}
+              className="p-2 rounded-full transition-all duration-300"
+            >
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                {theme === "dark" ? (
+                  <FaSun className="w-6 h-6 text-yellow-400" />
+                ) : (
+                  <FaMoon className="w-6 h-6 text-gray-600" />
+                )}
+              </motion.div>
+            </motion.button>
+            </div>
+
             {/* Social Links */}
             <motion.div
               variants={itemVariants}
@@ -174,7 +217,7 @@ const MenuOverlay = ({ navLinks, closeMenu, activeSection }) => {
               className="text-center pb-8 px-4"
             >
               <p className="text-gray-500 dark:text-gray-400 text-sm bg-gray-100/80 dark:bg-white/5 backdrop-blur-lg rounded-full px-4 py-2 inline-block border border-gray-200/50 dark:border-white/10">
-                © 2024 Kelvin. All rights reserved.
+                © 2025 Kelvin. All rights reserved.
               </p>
             </motion.div>
           </div>

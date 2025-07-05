@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-scroll";
 import { AnimatePresence, motion } from "framer-motion";
-import dynamic from 'next/dynamic';
 import MenuOverlay from "./MenuOverlay";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { useTheme } from '../context/ThemeContext';
