@@ -90,7 +90,7 @@ export const CV = () => {
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
             <Image src="/assets/Gmail.png" style={{width: 12, height: 12, marginRight: 4, marginBottom: 4, alignSelf: 'center'}} />
-            <Link src="mailto:akevin1206@gmail.com" style={styles.contactLink}>
+            <Link src="mailto:kelvintan127.kt@gmail.com" style={styles.contactLink}>
               kelvintan127.kt@gmail.com
             </Link>
           </View>

@@ -177,24 +177,24 @@ export const publications = [
   }
 ];
 
-export const recommendations = [
-  {
-    name: "Jonathan Purnama",
-    title: "Mayora Development Program (MDP) Area Field Promotion Supervisor || Public Relations, Campaign, Events, Marketing Communication",
-    date: "January 30, 2024",
-    relationship: "Jonathan and Kevin studied together",
-    text: "I highly recommend Kevin for their exceptional skills in software engineering, particularly in C++ and Rust programming language. Their expertise in designing robust and scalable solutions has been invaluable to every project they've been a part of. Their dedication, attention to detail, and ability to adapt to new technologies make them a valuable asset to any team.",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQGfQQaYQkE6rQ/profile-displayphoto-shrink_100_100/B56ZPz_V.tG4AU-/0/1734965291664?e=1742428800&v=beta&t=4RMcwPsTvL2WR1CeYQ2G35B5IhXf1Y-pGwTtpvGAjGM"
-  },
-  {
-    name: "Dylan Christiandi",
-    title: "Frontend Developer",
-    date: "February 13, 2025",
-    relationship: "Dylan worked with Kevin on the same team",
-    text: "I had the pleasure of working with Kevin during our internship and he quickly stood out with his strong problem solving skills and proactive approach. Despite working with a complex system, he grasped its intricacies quickly and navigated challenges with confidence like he always knew what he was doing.\nBeyond our internship, I also teamed up with Kevin in a hackathon, where his ability to think critically under pressure made a huge impact. He’s someone who can break down tough problems, communicate clearly, and execute solutions effectively.",
-    image: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-  }
-];
+// export const recommendations = [
+//   {
+//     name: "Jonathan Purnama",
+//     title: "Mayora Development Program (MDP) Area Field Promotion Supervisor || Public Relations, Campaign, Events, Marketing Communication",
+//     date: "January 30, 2024",
+//     relationship: "Jonathan and Kevin studied together",
+//     text: "I highly recommend Kevin for their exceptional skills in software engineering, particularly in C++ and Rust programming language. Their expertise in designing robust and scalable solutions has been invaluable to every project they've been a part of. Their dedication, attention to detail, and ability to adapt to new technologies make them a valuable asset to any team.",
+//     image: "https://media.licdn.com/dms/image/v2/D5603AQGfQQaYQkE6rQ/profile-displayphoto-shrink_100_100/B56ZPz_V.tG4AU-/0/1734965291664?e=1742428800&v=beta&t=4RMcwPsTvL2WR1CeYQ2G35B5IhXf1Y-pGwTtpvGAjGM"
+//   },
+//   {
+//     name: "Dylan Christiandi",
+//     title: "Frontend Developer",
+//     date: "February 13, 2025",
+//     relationship: "Dylan worked with Kevin on the same team",
+//     text: "I had the pleasure of working with Kevin during our internship and he quickly stood out with his strong problem solving skills and proactive approach. Despite working with a complex system, he grasped its intricacies quickly and navigated challenges with confidence like he always knew what he was doing.\nBeyond our internship, I also teamed up with Kevin in a hackathon, where his ability to think critically under pressure made a huge impact. He’s someone who can break down tough problems, communicate clearly, and execute solutions effectively.",
+//     image: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+//   }
+// ];
 
 
 export const skills = [
