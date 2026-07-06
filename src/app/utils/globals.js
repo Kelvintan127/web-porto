@@ -127,6 +127,14 @@ export const experiences = [
       "Implemented user authentication using RBAC (Role Based Access Control)."
     ]
   },
+  {
+    title: "SAP Consultant",
+    company: "PT. Astra International Tbk",
+    period: "December 2025 - September 2026",
+    description: [
+      "Supported system implementation and application rollout activities across business units."
+    ] 
+  }
 ]
 
 export const projects = [

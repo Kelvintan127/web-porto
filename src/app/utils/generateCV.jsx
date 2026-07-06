@@ -78,7 +78,7 @@ export const CV = () => {
   
   return (
     <Document>
-          <Page size="A3" style={styles.page}>
+          <Page size="A4" style={styles.page} wrap={false}>
         <Text style={styles.name}>Kelvin Tan</Text>
         <Text style={styles.location}>Jakarta, Indonesia</Text>
         <View style={styles.contactRow}>
