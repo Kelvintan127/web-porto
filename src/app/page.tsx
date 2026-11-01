@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, MapPin, Sparkles } from "lucide-react";
-import { HeroVisual } from "@/components/three/hero-visual";
+import { RoomHero } from "@/components/hero/room-hero";
 import { heroCopy } from "@/content/room";
 import { profile, about } from "@/content/profile";
 import { featuredProjects } from "@/content/projects";
@@ -51,16 +51,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative mx-auto aspect-square w-full max-w-[34rem] overflow-hidden rounded-card border border-line/60 bg-ink-2/40 lg:-mr-10" aria-label="Digital room illustration of a small developer workspace">
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-ink to-transparent" aria-hidden="true" />
-            <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center" aria-hidden="true">
-              <div className="mt-[19rem] flex items-center gap-2 rounded-full border border-line/80 bg-ink/70 px-3 py-1.5 backdrop-blur-sm">
-                <span className="size-1.5 rounded-full bg-cyan" />
-                <span className="label-mono !text-[0.55rem] !tracking-[0.15em]">Kelvin&apos;s digital room</span>
-              </div>
-            </div>
-            <HeroVisual />
-          </div>
+          <RoomHero />
         </div>
 
         <div className="container-x absolute bottom-0 left-1/2 hidden -translate-x-1/2 items-center justify-between pb-7 text-[0.65rem] text-muted/70 sm:flex">

@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import type { RoomObjectId } from "@/content/room";
 
 type Pointer = { x: number; y: number };
 
@@ -24,10 +25,23 @@ const HeroCanvas = dynamic(() => import("@/components/three/hero-canvas"), {
   loading: () => <RoomSkeleton label="Warming up the room" />,
 });
 
-export function HeroVisual() {
+export function HeroVisual({
+  pointer,
+  selected,
+  hovered,
+  onSelect,
+  onHover,
+  onReset,
+}: {
+  pointer: React.RefObject<Pointer>;
+  selected: RoomObjectId | null;
+  hovered: RoomObjectId | null;
+  onSelect: (id: RoomObjectId) => void;
+  onHover: (id: RoomObjectId | null) => void;
+  onReset: () => void;
+}) {
   const [reduced, setReduced] = useState(false);
   const [webgl, setWebgl] = useState<boolean | null>(null);
-  const pointer = useRef<Pointer>({ x: 0, y: 0 });
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -41,18 +55,11 @@ export function HeroVisual() {
 
   if (webgl === false) {
     return (
-      <div className="absolute inset-0 grid place-items-center" aria-hidden="true">
+      <div className="absolute inset-0 grid place-items-center" aria-label="Static digital room preview">
         <div className="w-[78%] rounded-card border border-line/70 bg-surface/30 p-4">
           <div className="h-2 w-1/3 rounded-full bg-cyan/40" />
-          <div className="mt-3 space-y-2">
-            <div className="h-2 w-2/3 rounded-full bg-line/70" />
-            <div className="h-2 w-1/2 rounded-full bg-line/50" />
-          </div>
-          <div className="mt-5 grid grid-cols-3 gap-2">
-            <div className="h-12 rounded-md bg-line/40" />
-            <div className="h-12 rounded-md bg-cyan/20" />
-            <div className="h-12 rounded-md bg-blue/20" />
-          </div>
+          <div className="mt-3 space-y-2"><div className="h-2 w-2/3 rounded-full bg-line/70" /><div className="h-2 w-1/2 rounded-full bg-line/50" /></div>
+          <div className="mt-5 grid grid-cols-3 gap-2"><div className="h-12 rounded-md bg-line/40" /><div className="h-12 rounded-md bg-cyan/20" /><div className="h-12 rounded-md bg-blue/20" /></div>
           <p className="label-mono mt-4 !text-[0.55rem]">Static room preview · WebGL off</p>
         </div>
       </div>
@@ -62,20 +69,11 @@ export function HeroVisual() {
   if (webgl === null) return <RoomSkeleton label="Loading room" />;
 
   return (
-    <div
-      className="absolute inset-0"
-      onPointerMove={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        pointer.current = {
-          x: ((event.clientX - rect.left) / rect.width - 0.5) * 2,
-          y: ((event.clientY - rect.top) / rect.height - 0.5) * 2,
-        };
-      }}
-      onPointerLeave={() => {
-        pointer.current = { x: 0, y: 0 };
-      }}
-    >
-      <HeroCanvas reducedMotion={reduced} pointer={pointer} />
+    <div className="absolute inset-0" onPointerMove={(event) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      pointer.current = { x: ((event.clientX - rect.left) / rect.width - 0.5) * 2, y: ((event.clientY - rect.top) / rect.height - 0.5) * 2 };
+    }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 }; }}>
+      <HeroCanvas reducedMotion={reduced} pointer={pointer} selected={selected} hovered={hovered} onSelect={onSelect} onHover={onHover} onReset={onReset} />
     </div>
   );
 }
