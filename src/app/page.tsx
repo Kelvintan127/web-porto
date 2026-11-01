@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, MapPin, Sparkles } from "lucide-react";
 import { HeroVisual } from "@/components/three/hero-visual";
+import { heroCopy } from "@/content/room";
 import { profile, about } from "@/content/profile";
 import { featuredProjects } from "@/content/projects";
 import { experience, skillGroups } from "@/content/career";
@@ -24,13 +25,13 @@ export default function HomePage() {
           <div className="relative z-10 max-w-3xl">
             <div className="mb-9 flex items-center gap-3" data-reveal>
               <span className="size-2 rounded-full bg-cyan shadow-[0_0_16px_rgba(100,233,208,0.8)]" />
-              <span className="label-mono">ERP consultant · software developer</span>
+              <span className="label-mono">{heroCopy.eyebrow}</span>
             </div>
-            <h1 className="max-w-[11ch] font-display text-hero font-medium leading-[0.96] tracking-[-0.055em] text-fg" data-reveal style={{ "--reveal-delay": "80ms" } as React.CSSProperties}>
-              Connecting <span className="text-muted">business</span> processes with <span className="bg-gradient-to-r from-cyan via-[#a0f3df] to-blue bg-clip-text text-transparent">technology.</span>
+            <h1 className="max-w-[13ch] font-display text-hero font-medium leading-[0.96] tracking-[-0.055em] text-fg" data-reveal style={{ "--reveal-delay": "80ms" } as React.CSSProperties}>
+              {heroCopy.headlineLead} <span className="bg-gradient-to-r from-cyan via-[#a0f3df] to-blue bg-clip-text text-transparent">{heroCopy.headlineAccent}</span>
             </h1>
             <p className="mt-7 max-w-xl text-base leading-7 text-muted sm:text-lg sm:leading-8" data-reveal style={{ "--reveal-delay": "150ms" } as React.CSSProperties}>
-              I&apos;m {profile.name}, an ERP Consultant with a software development background. I enjoy understanding how work gets done, building applications, and exploring where technology can make a practical difference.
+              {heroCopy.intro}
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3" data-reveal style={{ "--reveal-delay": "220ms" } as React.CSSProperties}>
               <Link href="#work" className="group inline-flex min-h-12 items-center gap-3 rounded-full bg-cyan px-5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5">
@@ -50,12 +51,12 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative mx-auto aspect-square w-full max-w-[34rem] lg:-mr-10" aria-label="Interactive abstract network visualization">
-            <div className="pointer-events-none absolute inset-0 z-10 rounded-full bg-[radial-gradient(circle,transparent_35%,#080d18_74%)]" aria-hidden="true" />
+          <div className="relative mx-auto aspect-square w-full max-w-[34rem] overflow-hidden rounded-card border border-line/60 bg-ink-2/40 lg:-mr-10" aria-label="Digital room illustration of a small developer workspace">
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-ink to-transparent" aria-hidden="true" />
             <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center" aria-hidden="true">
-              <div className="mt-32 flex items-center gap-2 rounded-full border border-line/80 bg-ink/70 px-3 py-1.5 backdrop-blur-sm">
+              <div className="mt-[19rem] flex items-center gap-2 rounded-full border border-line/80 bg-ink/70 px-3 py-1.5 backdrop-blur-sm">
                 <span className="size-1.5 rounded-full bg-cyan" />
-                <span className="label-mono !text-[0.55rem] !tracking-[0.15em]">Systems, connected</span>
+                <span className="label-mono !text-[0.55rem] !tracking-[0.15em]">Kelvin&apos;s digital room</span>
               </div>
             </div>
             <HeroVisual />
