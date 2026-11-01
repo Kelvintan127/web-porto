@@ -105,10 +105,7 @@ export const playgroundProjects = [
     category: "IoT",
     description: "A Next.js interface and Express.js backend that trigger an ESP32 and servo motor to control a physical lamp switch.",
     image: "/assets/iot.png",
-    links: [
-      { label: "Live demo", href: "#" },
-      { label: "GitHub", href: "https://github.com/kelvintan127" },
-    ],
+    links: [{ label: "GitHub profile", href: "https://github.com/kelvintan127" }],
     technologies: ["Next.js", "Express.js", "ESP32"],
   },
   {
