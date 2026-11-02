@@ -96,32 +96,21 @@ export const projects: Project[] = [
 
 export const featuredProjects = projects.slice(0, 3);
 
-export const playgroundProjects = [
+export const playgroundProjects: {
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  links: { label: string; href: string }[];
+  technologies: string[];
+}[] = [
   {
-    title: "IoT Lamp Switch",
-    category: "IoT",
+    title: "Home Server",
+    category: "Self-hosted",
     description:
-      "A Next.js interface and Express.js backend that drive an ESP32 running a servo motor, so a physical wall switch can be toggled from a browser instead of by hand.",
-    image: "/assets/iot.png",
-    links: [],
-    technologies: ["Next.js", "Express.js", "ESP32", "Servo"],
-  },
-  {
-    title: "Live Chat Room",
-    category: "Real-time",
-    description:
-      "A full-stack chat application built on Next.js and Express.js with Socket.IO, keeping a room's messages in sync in real time and persisting them through Prisma.",
-    image: "/assets/livechat.png",
-    links: [{ label: "Repository", href: "https://github.com/kelvintan127/livechat" }],
-    technologies: ["Next.js", "Express.js", "Socket.IO", "Prisma"],
-  },
-  {
-    title: "iServe Attendance Automation",
-    category: "Automation",
-    description:
-      "A Puppeteer bot on an n8n schedule that runs a repetitive attendance flow twice a day, logging in, submitting the one-time code, detecting the current status, and taking achievement and description input through a Telegram bot.",
+      "A home server running the services I use day to day: Nextcloud for my own files and sync, a stack of self-hosted tools behind a reverse proxy, and AI agents scheduled to run on their own.",
     image: "/assets/2.png",
     links: [],
-    technologies: ["Node.js", "Puppeteer", "n8n", "Docker"],
+    technologies: ["Linux", "Docker", "Nextcloud", "Reverse Proxy", "AI Agents"],
   },
 ];

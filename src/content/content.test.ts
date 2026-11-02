@@ -86,7 +86,7 @@ describe("portfolio content integrity", () => {
   });
 
   it("lists only playground experiments with a real subject", () => {
-    expect(playgroundProjects.length).toBeGreaterThanOrEqual(3);
+    expect(playgroundProjects.length).toBeGreaterThanOrEqual(1);
     const titles = playgroundProjects.map((item) => item.title);
     expect(new Set(titles).size).toBe(titles.length);
     for (const item of playgroundProjects) {
