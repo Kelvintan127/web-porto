@@ -121,7 +121,7 @@ export const playgroundProjects = [
     description:
       "A Puppeteer bot on an n8n schedule that runs a repetitive attendance flow twice a day, logging in, submitting the one-time code, detecting the current status, and taking achievement and description input through a Telegram bot.",
     image: "/assets/2.png",
-    links: [{ label: "Repository", href: "https://github.com/kelvintan127/auto-serve" }],
+    links: [],
     technologies: ["Node.js", "Puppeteer", "n8n", "Docker"],
   },
 ];

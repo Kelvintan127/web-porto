@@ -59,6 +59,20 @@ describe("portfolio content integrity", () => {
     }
   });
 
+  it("points every outbound link at a real public page", () => {
+    const links = [
+      ...projects.flatMap((project) => project.links),
+      ...playgroundProjects.flatMap((item) => item.links),
+    ];
+    const repos = new Set([
+      "https://github.com/kelvintan127/backend-bayarcepat",
+      "https://github.com/kelvintan127/livechat",
+    ]);
+    for (const link of links) {
+      if (link.href.includes("github.com")) expect(repos.has(link.href)).toBe(true);
+    }
+  });
+
   it("never sends readers to a bare GitHub profile as project evidence", () => {
     const links = [
       ...projects.flatMap((project) => project.links),
