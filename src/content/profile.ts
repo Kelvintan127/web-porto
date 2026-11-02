@@ -8,7 +8,7 @@
 export const profile = {
   name: "Kelvin Tan",
   title: "ERP Consultant & Software Developer",
-  headline: "Connecting Business Processes with Technology",
+  headline: "ERP, software, and curiosity — all in one journey.",
   intro:
     "I work where business processes meet software. Currently an ERP consultant with a background in backend and full-stack development — most at home turning how a company actually operates into systems that hold up.",
   location: "Jakarta, Indonesia",
