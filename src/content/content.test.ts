@@ -9,7 +9,8 @@ describe("portfolio content integrity", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
     for (const project of projects) {
       expect(project.slug).toMatch(/^[a-z0-9-]+$/);
-      expect(project.contributions.length).toBeGreaterThan(0);
+      expect(project.role.length).toBeGreaterThan(0);
+      expect(project.features.length).toBeGreaterThan(0);
     }
   });
 
@@ -34,26 +35,27 @@ describe("portfolio content integrity", () => {
     expect(experience.at(-1)?.company).toBe("BINUS University");
   });
 
-  it("gives every project a case study with problem, role, and implementation", () => {
+  it("gives every project a showcase-ready feature list", () => {
     for (const project of projects) {
-      expect(project.caseStudy.problem.length).toBeGreaterThan(40);
-      expect(project.caseStudy.role.length).toBeGreaterThan(20);
-      expect(project.caseStudy.implementation.length).toBeGreaterThan(40);
+      expect(project.role.length).toBeGreaterThan(10);
+      expect(project.features.length).toBeGreaterThanOrEqual(3);
+      for (const feature of project.features) expect(feature.trim().length).toBeGreaterThan(8);
     }
   });
 
-  it("draws architecture flows only from the project's own stack", () => {
+  it("keeps long-form case study fields out of the public data", () => {
     for (const project of projects) {
-      const flow = project.caseStudy.architecture?.flow;
-      if (!flow) continue;
-      expect(flow.length).toBeGreaterThanOrEqual(3);
-      for (const node of flow) expect(node.trim()).not.toBe("");
-      const stack = project.technologies.join(" ").toLowerCase();
-      const named = flow.filter((node) =>
-        project.technologies.some((tech) => node.toLowerCase().includes(tech.split(".")[0].toLowerCase())),
-      );
-      expect(named.length).toBeGreaterThan(0);
-      expect(stack).toContain(project.technologies[0].split(".")[0].toLowerCase());
+      expect(project).not.toHaveProperty("caseStudy");
+      expect(project).not.toHaveProperty("description");
+    }
+  });
+
+  it("labels every screenshot it does expose", () => {
+    for (const project of projects) {
+      for (const shot of project.screenshots ?? []) {
+        expect(shot.src).toMatch(/^\/assets\//);
+        expect(shot.alt.trim().length).toBeGreaterThan(10);
+      }
     }
   });
 
@@ -83,7 +85,7 @@ describe("portfolio content integrity", () => {
   it("keeps public copy free of defensive verification notes", () => {
     const banned = /verified|unverified|no unverified|not claims|placeholder|scope note/i;
     const publicCopy = [
-      ...projects.flatMap((project) => [project.summary, project.description, project.caseStudy.problem, project.caseStudy.role, project.caseStudy.implementation, ...(project.caseStudy.challenges ?? []), ...(project.caseStudy.lessons ?? [])]),
+      ...projects.flatMap((project) => [project.summary, project.role, ...project.features]),
       ...playgroundProjects.flatMap((item) => [item.description]),
       about.lede,
       ...about.paragraphs,

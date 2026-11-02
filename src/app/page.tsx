@@ -5,7 +5,7 @@ import { heroCopy } from "@/content/room";
 import { profile, about } from "@/content/profile";
 import { featuredProjects } from "@/content/projects";
 import { experience, journey, skillGroups } from "@/content/career";
-import { ProjectCard } from "@/components/project-card";
+import { ProjectShowcase } from "@/components/project-showcase";
 import { ContactPanel } from "@/components/contact-panel";
 import { SkillExplorer } from "@/components/skill-explorer";
 import { Playground } from "@/components/playground";
@@ -97,8 +97,8 @@ export default function HomePage() {
             <SectionHeading eyebrow="Selected work" title="Projects that do something useful." />
             <Link href="/projects" className="group inline-flex items-center gap-2 pb-1 text-sm text-muted transition-colors hover:text-cyan">View all projects <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" /></Link>
           </div>
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {featuredProjects.map((project) => <ProjectCard key={project.slug} project={project} />)}
+          <div className="mt-12">
+            <ProjectShowcase />
           </div>
         </div>
       </section>
