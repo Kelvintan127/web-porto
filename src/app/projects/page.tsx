@@ -20,7 +20,7 @@ export default function ProjectsPage() {
       <div data-reveal>
         <SectionHeading eyebrow="Project archive" title="Selected projects and experiments." />
         <p className="mt-5 max-w-2xl text-sm leading-7 text-muted">
-          A mix of backend, full-stack, and web work. Descriptions stay close to information documented in my CV and public project pages.
+          A mix of backend, full-stack, and web work, written up as short case studies: the problem, what I did, how it was built, and what I took from it.
         </p>
       </div>
       <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

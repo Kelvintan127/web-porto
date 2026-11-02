@@ -4,7 +4,7 @@ import { RoomHero } from "@/components/hero/room-hero";
 import { heroCopy } from "@/content/room";
 import { profile, about } from "@/content/profile";
 import { featuredProjects } from "@/content/projects";
-import { experience, skillGroups } from "@/content/career";
+import { experience, journey, skillGroups } from "@/content/career";
 import { ProjectCard } from "@/components/project-card";
 import { ContactPanel } from "@/components/contact-panel";
 import { SkillExplorer } from "@/components/skill-explorer";
@@ -100,7 +100,6 @@ export default function HomePage() {
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
             {featuredProjects.map((project) => <ProjectCard key={project.slug} project={project} />)}
           </div>
-          <p className="mt-5 text-xs leading-5 text-muted/75">Project descriptions reflect CV details and publicly available information; no unverified outcome claims.</p>
         </div>
       </section>
 
@@ -108,7 +107,17 @@ export default function HomePage() {
         <div className="grid gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
           <div data-reveal>
             <SectionHeading eyebrow="Where I have worked" title="Experience, in context." />
-            <p className="mt-5 max-w-sm text-sm leading-6 text-muted">A path from building software to working with enterprise applications and business processes.</p>
+            <p className="mt-5 max-w-sm text-sm leading-6 text-muted">{journey.intro}</p>
+            <ol className="mt-9 space-y-5 border-l border-line/60 pl-5">
+              {journey.stages.map((stage) => (
+                <li key={stage.title} className="relative">
+                  <span aria-hidden="true" className="absolute -left-[1.55rem] top-2 size-1.5 rounded-full bg-muted/40" />
+                  <p className="label-mono !text-[0.55rem]">{stage.period}</p>
+                  <h3 className="mt-1 font-display text-sm font-medium text-fg">{stage.title}</h3>
+                  <p className="mt-1.5 text-xs leading-6 text-muted">{stage.detail}</p>
+                </li>
+              ))}
+            </ol>
           </div>
           <ol className="relative border-l border-line/80 pl-7 sm:pl-9">
             {experience.map((item, i) => (
@@ -147,7 +156,7 @@ export default function HomePage() {
         <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end" data-reveal>
           <div>
             <SectionHeading eyebrow="Engineering playground" title="Things I build to learn." />
-            <p className="mt-5 max-w-xl text-sm leading-6 text-muted">Small projects and experiments across IoT, real-time apps, and web development. A place for curiosity, not claims.</p>
+            <p className="mt-5 max-w-xl text-sm leading-6 text-muted">Small projects and experiments across IoT, real-time apps, and automation, built to learn how the pieces fit together.</p>
           </div>
           <a href={profile.links.github} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 pb-1 text-sm text-muted transition-colors hover:text-cyan">More on GitHub <ArrowUpRight size={15} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></a>
         </div>

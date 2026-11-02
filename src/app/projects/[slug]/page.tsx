@@ -74,19 +74,55 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
           <div className="max-w-2xl" data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
             <section>
-              <p className="label-mono">Overview</p>
-              <p className="mt-5 text-lg leading-8 text-fg">{project.description}</p>
+              <p className="label-mono">The problem</p>
+              <p className="mt-5 text-lg leading-8 text-fg">{project.caseStudy.problem}</p>
             </section>
+            <section className="mt-14 border-t border-line/70 pt-8">
+              <p className="label-mono">My role</p>
+              <p className="mt-5 text-base leading-8 text-muted">{project.caseStudy.role}</p>
+            </section>
+            <section className="mt-14 border-t border-line/70 pt-8">
+              <p className="label-mono">How it was built</p>
+              <p className="mt-5 text-base leading-8 text-muted">{project.caseStudy.implementation}</p>
+            </section>
+            {project.caseStudy.architecture && (
+              <section className="mt-14 border-t border-line/70 pt-8">
+                <p className="label-mono">Architecture</p>
+                <p className="mt-4 text-xs text-muted/80">{project.caseStudy.architecture.label}</p>
+                <ol className="mt-5 space-y-0">
+                  {project.caseStudy.architecture.flow.map((node, i, all) => (
+                    <li key={node} className="relative border-l border-line/80 pb-5 pl-6 last:pb-0">
+                      <span aria-hidden="true" className="absolute -left-[4.5px] top-2 size-2 rounded-full border border-cyan/60 bg-ink" />
+                      <span className="font-mono text-xs text-muted/70">{String(i + 1).padStart(2, "0")}</span>
+                      <p className="mt-1 text-sm text-fg">{node}</p>
+                      {i === all.length - 1 && <span className="sr-only">End of flow</span>}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
             <section className="mt-14 border-t border-line/70 pt-8">
               <p className="label-mono">My contributions</p>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                 {project.contributions.map((item) => <li key={item} className="flex gap-3 text-sm leading-6 text-muted"><Check size={16} className="mt-1 shrink-0 text-cyan" />{item}</li>)}
               </ul>
             </section>
-            <section className="mt-14 border-t border-line/70 pt-8">
-              <p className="label-mono">Scope note</p>
-              <p className="mt-5 text-sm leading-7 text-muted">This case study describes the verified project context and documented contribution areas. Internal implementation details, confidential enterprise information, and unsupported metrics are intentionally omitted.</p>
-            </section>
+            {project.caseStudy.challenges && (
+              <section className="mt-14 border-t border-line/70 pt-8">
+                <p className="label-mono">What was hard</p>
+                <ul className="mt-5 space-y-3">
+                  {project.caseStudy.challenges.map((item) => <li key={item} className="flex gap-3 text-sm leading-7 text-muted"><span aria-hidden="true" className="mt-2.5 size-1 shrink-0 rounded-full bg-cyan/70" />{item}</li>)}
+                </ul>
+              </section>
+            )}
+            {project.caseStudy.lessons && (
+              <section className="mt-14 border-t border-line/70 pt-8">
+                <p className="label-mono">What I took from it</p>
+                <ul className="mt-5 space-y-3">
+                  {project.caseStudy.lessons.map((item) => <li key={item} className="flex gap-3 text-sm leading-7 text-muted"><span aria-hidden="true" className="mt-2.5 size-1 shrink-0 rounded-full bg-blue/70" />{item}</li>)}
+                </ul>
+              </section>
+            )}
           </div>
         </div>
 
