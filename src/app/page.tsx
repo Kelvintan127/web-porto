@@ -95,7 +95,6 @@ export default function HomePage() {
         <div className="container-x">
           <div className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end" data-reveal>
             <SectionHeading eyebrow="Selected work" title="Projects that do something useful." />
-            <Link href="/projects" className="group inline-flex items-center gap-2 pb-1 text-sm text-muted transition-colors hover:text-cyan">View all projects <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" /></Link>
           </div>
           <div className="mt-12">
             <ProjectShowcase />

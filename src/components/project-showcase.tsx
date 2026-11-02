@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowUpRight, X } from "lucide-react";
 import { projects, type Project } from "@/content/projects";
 
@@ -63,9 +62,6 @@ export function ProjectShowcase() {
                 >
                   Quick view <ArrowUpRight size={13} />
                 </button>
-                <Link href={`/projects/${project.slug}`} className="inline-flex min-h-11 items-center text-xs text-muted transition-colors hover:text-fg">
-                  Full page
-                </Link>
               </div>
             </div>
           </article>
@@ -125,9 +121,6 @@ export function ProjectShowcase() {
                     {link.label} <ArrowUpRight size={14} />
                   </a>
                 ))}
-                <Link href={`/projects/${active.slug}`} onClick={close} className="inline-flex min-h-11 items-center text-sm text-muted hover:text-fg">
-                  Open full page
-                </Link>
               </div>
             </div>
           </div>
