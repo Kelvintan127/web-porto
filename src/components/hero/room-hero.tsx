@@ -11,6 +11,9 @@ export function RoomHero() {
   const [selected, setSelected] = useState<RoomObjectId | null>(null);
   const [hovered, setHovered] = useState<RoomObjectId | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const chipRefs = useRef(new Map<RoomObjectId, HTMLButtonElement>());
+  // Where focus should go back to when a card closes; null means the card had no opener.
+  const returnFocusRef = useRef<RoomObjectId | null>(null);
 
   const reset = useCallback(() => {
     setSelected(null);
@@ -30,6 +33,20 @@ export function RoomHero() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selected, reset]);
 
+  useEffect(() => {
+    if (selected) return;
+    // Only move focus back if it is still inside the hero, so we never steal it from the page.
+    const opener = returnFocusRef.current;
+    returnFocusRef.current = null;
+    if (opener) chipRefs.current.get(opener)?.focus();
+  }, [selected]);
+
+  const open = useCallback((id: RoomObjectId) => {
+    // Canvas objects have no native focus target. Return to matching chip after close.
+    returnFocusRef.current = id;
+    setSelected(id);
+  }, []);
+
   const active = selected ? roomObjectMap[selected] : null;
 
   return (
@@ -46,7 +63,7 @@ export function RoomHero() {
           pointer={pointer}
           selected={selected}
           hovered={hovered}
-          onSelect={setSelected}
+          onSelect={open}
           onHover={setHovered}
           onReset={reset}
         />
@@ -59,8 +76,12 @@ export function RoomHero() {
           return (
             <li key={object.id}>
               <button
+                ref={(element) => {
+                  if (element) chipRefs.current.set(object.id, element);
+                  else chipRefs.current.delete(object.id);
+                }}
                 type="button"
-                onClick={() => (isActive ? reset() : setSelected(object.id))}
+                onClick={() => (isActive ? reset() : open(object.id))}
                 aria-pressed={isActive}
                 aria-label={`${object.label}: ${object.blurb}`}
                 className={`min-h-11 rounded-full border px-3.5 text-xs transition-colors ${

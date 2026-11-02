@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { defaultCamera, roomObjects, type RoomObjectId, type Vec3 } from "@/content/room";
+import { defaultCamera, mobileCamera, roomObjects, type CameraPreset, type RoomObjectId, type Vec3 } from "@/content/room";
 
 type Pointer = { x: number; y: number };
 type Focus = { position: Vec3; lookAt: Vec3 };
@@ -34,7 +34,7 @@ function Box({
   rotation?: Vec3;
 }) {
   return (
-    <mesh position={position} rotation={rotation}>
+    <mesh position={position} scale={scale} rotation={rotation}>
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color={color} emissive={emissive} emissiveIntensity={emissiveIntensity} roughness={0.72} metalness={0.15} />
     </mesh>
@@ -141,30 +141,33 @@ function HitTarget({
   onSelect: (id: RoomObjectId) => void;
   onHover: (id: RoomObjectId | null) => void;
 }) {
+  const outline = useMemo(() => new THREE.BoxGeometry(1, 1, 1), []);
   return (
     <mesh
       position={position}
       scale={scale}
-      onPointerDown={(event) => { event.stopPropagation(); onSelect(id); }}
+      onClick={(event) => { event.stopPropagation(); onSelect(id); }}
       onPointerOver={(event) => { event.stopPropagation(); onHover(id); }}
       onPointerOut={(event) => { event.stopPropagation(); onHover(null); }}
       onPointerMissed={() => onHover(null)}
     >
       <boxGeometry args={[1, 1, 1]} />
       <meshBasicMaterial transparent opacity={0} />
-      {(active || hovered) && <lineSegments><edgesGeometry args={[new THREE.BoxGeometry(1, 1, 1)]} /><lineBasicMaterial color={COLORS.cyan} transparent opacity={active ? 0.7 : 0.45} /></lineSegments>}
+      {(active || hovered) && <lineSegments><edgesGeometry args={[outline]} /><lineBasicMaterial color={COLORS.cyan} transparent opacity={active ? 0.7 : 0.45} /></lineSegments>}
     </mesh>
   );
 }
 
 function Room({
   pointer,
+  reducedMotion,
   selected,
   hovered,
   onSelect,
   onHover,
 }: {
   pointer: React.RefObject<Pointer>;
+  reducedMotion: boolean;
   selected: RoomObjectId | null;
   hovered: RoomObjectId | null;
   onSelect: (id: RoomObjectId) => void;
@@ -173,27 +176,36 @@ function Room({
   const room = useRef<THREE.Group>(null);
   const lamp = useRef<THREE.Mesh>(null);
   const led = useRef<THREE.Mesh>(null);
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   const target = useMemo(() => new THREE.Vector3(), []);
   const lookAt = useMemo(() => new THREE.Vector3(), []);
   const selectedObject = selected ? roomObjects.find((object) => object.id === selected) : null;
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    const focus: Focus = selectedObject?.camera ?? defaultCamera;
-    if (room.current && !selected) {
-      room.current.rotation.y += (pointer.current.x * 0.09 + Math.sin(t * 0.22) * 0.025 - room.current.rotation.y) * 0.025;
-      room.current.rotation.x += (pointer.current.y * -0.035 - room.current.rotation.x) * 0.025;
-      room.current.position.y = Math.sin(t * 0.45) * 0.018;
-    } else if (room.current) {
-      room.current.rotation.y += (pointer.current.x * 0.03 - room.current.rotation.y) * 0.03;
-      room.current.rotation.x *= 0.96;
-      room.current.position.y *= 0.95;
+    // Narrow canvases need the closer mobile framing; no hook re-render needed.
+    const home: CameraPreset = size.width < 480 ? mobileCamera : defaultCamera;
+    const focus: Focus = selectedObject?.camera ?? home;
+    const still = reducedMotion || Boolean(selectedObject);
+
+    if (room.current) {
+      // Idle drift and parallax are decoration; both stop when motion is reduced.
+      const driftY = still ? 0 : pointer.current.x * 0.09 + Math.sin(t * 0.22) * 0.025;
+      const driftX = still ? 0 : pointer.current.y * -0.035;
+      room.current.rotation.y += (driftY - room.current.rotation.y) * 0.03;
+      room.current.rotation.x += (driftX - room.current.rotation.x) * 0.03;
+      room.current.position.y += ((still ? 0 : Math.sin(t * 0.45) * 0.018) - room.current.position.y) * 0.05;
     }
-    if (lamp.current) (lamp.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.45 + Math.sin(t * 2.2) * 0.04;
-    if (led.current) (led.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.45 + (Math.sin(t * 3.5) + 1) * 0.15;
+
+    if (!reducedMotion) {
+      if (lamp.current) (lamp.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.45 + Math.sin(t * 2.2) * 0.04;
+      if (led.current) (led.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.45 + (Math.sin(t * 3.5) + 1) * 0.15;
+    }
+
+    // Reduced motion snaps the camera instead of easing it: same framing, no travel.
+    const easing = reducedMotion ? 1 : selectedObject ? 0.09 : 0.04;
     target.set(...focus.position);
-    camera.position.lerp(target, selected ? 0.07 : 0.025);
+    camera.position.lerp(target, easing);
     lookAt.set(...focus.lookAt);
     camera.lookAt(lookAt);
   });
@@ -237,7 +249,9 @@ export default function HeroCanvas({
     <Canvas
       camera={{ position: defaultCamera.position, fov: 40 }}
       dpr={[1, 1.5]}
-      frameloop={reducedMotion ? "demand" : "always"}
+      // Reduced motion still needs a repaint so a selection visibly moves the camera;
+      // the scene itself zeroes its idle motion in that mode (see Room).
+      frameloop="always"
       gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
       onCreated={({ gl }) => gl.setClearAlpha(0)}
       onPointerMissed={onReset}
@@ -245,12 +259,12 @@ export default function HeroCanvas({
       style={{ pointerEvents: "auto" }}
     >
       <color attach="background" args={[COLORS.ink]} />
-      <fog attach="fog" args={[COLORS.ink, 5, 10]} />
+      <fog attach="fog" args={[COLORS.ink, 5, 11]} />
       <ambientLight intensity={0.7} />
       <directionalLight position={[-3, 5, 3]} intensity={1.2} color="#dbeafe" />
       <pointLight position={[1.3, 1.9, -0.8]} intensity={3} distance={4} color={COLORS.warm} />
       <pointLight position={[-2, 2.5, 1]} intensity={4} distance={6} color={COLORS.blue} />
-      <Room pointer={pointer} selected={selected} hovered={hovered} onSelect={onSelect} onHover={onHover} />
+      <Room pointer={pointer} reducedMotion={reducedMotion} selected={selected} hovered={hovered} onSelect={onSelect} onHover={onHover} />
     </Canvas>
   );
 }
