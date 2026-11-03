@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, X } from "lucide-react";
-import { roomObjects, roomObjectMap, type RoomObjectId } from "@/content/room";
+import { roomObjects, roomObjectMap, heroCopy, type RoomObjectId } from "@/content/room";
 import { HeroVisual } from "@/components/three/hero-visual";
 
 export function RoomHero() {
@@ -50,13 +50,13 @@ export function RoomHero() {
   const active = selected ? roomObjectMap[selected] : null;
 
   return (
-    <div className="relative">
+    <section className="relative" aria-labelledby="room-invite-heading">
       <div className="relative mx-auto aspect-square w-full max-w-[34rem] overflow-hidden rounded-card border border-line/60 bg-ink-2/40 lg:-mr-10">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-ink to-transparent" aria-hidden="true" />
-        <div className="pointer-events-none absolute inset-x-0 top-4 z-10 flex justify-center" aria-hidden="true">
+        <div className="pointer-events-none absolute inset-x-0 top-4 z-10 flex justify-center">
           <span className="flex items-center gap-2 rounded-full border border-line/80 bg-ink/70 px-3 py-1.5 backdrop-blur-sm">
             <span className="size-1.5 rounded-full bg-cyan" />
-            <span className="label-mono !text-[0.55rem] !tracking-[0.15em]">Kelvin&apos;s digital room</span>
+            <span className="label-mono !text-[0.55rem] !tracking-[0.15em]">{heroCopy.roomLabel}</span>
           </span>
         </div>
         <HeroVisual
@@ -67,6 +67,16 @@ export function RoomHero() {
           onHover={setHovered}
           onReset={reset}
         />
+      </div>
+
+      {/* The invitation names the interaction before the chips ask for a click. */}
+      <div className="mt-5 text-center lg:-mr-10" data-reveal>
+        <h2 id="room-invite-heading" className="font-display text-base font-medium tracking-[-0.01em] text-fg sm:text-lg">
+          {heroCopy.roomInvite.lead}
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-[0.8125rem] leading-6 text-muted">
+          {heroCopy.roomInvite.body}
+        </p>
       </div>
 
       {/* Alternative selection: works with touch, keyboard, and no-WebGL. */}
@@ -130,6 +140,6 @@ export function RoomHero() {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }

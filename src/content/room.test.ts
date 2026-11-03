@@ -167,9 +167,33 @@ describe("hero room content", () => {
     expect(onDesk(0.1)).toBeCloseTo(DESK_SURFACE_Y + 0.1, 6);
   });
 
-  it("uses the approved headline verbatim", () => {
+  it("keeps the approved tagline verbatim", () => {
+    expect(heroCopy.tagline).toBe("ERP, software, and curiosity — all in one journey.");
+    // The h1 is now the name; the tagline is secondary copy, not the heading.
     expect(`${heroCopy.headlineLead} — ${heroCopy.headlineAccent}`).toBe(
       "ERP, software, and curiosity — all in one journey.",
     );
+  });
+
+  it("separates the primary role from the supporting identities", () => {
+    expect(heroCopy.rolePrimary).toBe("ERP Consultant");
+    expect(heroCopy.rolesSupporting).toBe("Software Developer · Tech Explorer");
+    // The primary role must not be folded into the supporting line, or the
+    // hierarchy the hero copy depends on is lost.
+    expect(heroCopy.rolesSupporting).not.toContain(heroCopy.rolePrimary);
+  });
+
+  it("keeps the introduction personal and concise", () => {
+    expect(heroCopy.intro).toMatch(/^I'm Kelvin Tan\./);
+    // Concise means scannable in a hero: cap the sentence count.
+    const sentences = heroCopy.intro.split(/(?<=\.)\s+/).filter(Boolean);
+    expect(sentences.length).toBeLessThanOrEqual(4);
+    expect(heroCopy.intro.length).toBeLessThan(340);
+  });
+
+  it("invites the reader into the room", () => {
+    expect(heroCopy.roomInvite.lead.length).toBeGreaterThan(0);
+    expect(heroCopy.roomInvite.body.length).toBeGreaterThan(0);
+    expect(heroCopy.roomLabel).toBe("Kelvin's digital room");
   });
 });

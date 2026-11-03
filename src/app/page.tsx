@@ -21,19 +21,38 @@ export default function HomePage() {
           <div className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#52647e_0.7px,transparent_0.7px)] [background-size:29px_29px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]" />
         </div>
 
-        <div className="container-x grid min-h-[calc(min(860px,100svh)-4rem)] items-center gap-8 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:py-16">
-          <div className="relative z-10 max-w-3xl">
-            <div className="mb-9 flex items-center gap-3" data-reveal>
-              <span className="size-2 rounded-full bg-cyan shadow-[0_0_16px_rgba(100,233,208,0.8)]" />
+        <div className="container-x grid min-h-[calc(min(860px,100svh)-4rem)] items-center gap-12 py-16 sm:gap-10 lg:grid-cols-[1.06fr_0.94fr] lg:gap-14 lg:py-16">
+          <div className="relative z-10 max-w-3xl lg:order-1">
+            <div className="mb-6 flex items-center gap-3 sm:mb-8" data-reveal>
+              <span className="size-2 shrink-0 rounded-full bg-cyan shadow-[0_0_16px_rgba(100,233,208,0.8)]" />
               <span className="label-mono">{heroCopy.eyebrow}</span>
             </div>
-            <h1 className="max-w-[13ch] font-display text-hero font-medium leading-[0.96] tracking-[-0.055em] text-fg" data-reveal style={{ "--reveal-delay": "80ms" } as React.CSSProperties}>
-              {heroCopy.headlineLead} <span className="bg-gradient-to-r from-cyan via-[#a0f3df] to-blue bg-clip-text text-transparent">{heroCopy.headlineAccent}</span>
+
+            {/* The name leads; everything else supports it. Tighter tracking and a
+                balanced wrap keep it on two lines from 320px up. */}
+            <h1
+              className="font-display text-[clamp(2.5rem,9.5vw,4.75rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-fg"
+              data-reveal
+              style={{ "--reveal-delay": "70ms" } as React.CSSProperties}
+            >
+              {profile.name}<span className="text-cyan">.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-muted sm:text-lg sm:leading-8" data-reveal style={{ "--reveal-delay": "150ms" } as React.CSSProperties}>
+
+            {/* Role block: primary role in fg, supporting identities quieter. */}
+            <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-lg leading-snug sm:text-xl" data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties}>
+              <span className="font-display font-medium tracking-[-0.01em] text-fg">{heroCopy.rolePrimary}</span>
+              <span aria-hidden="true" className="text-muted/40">/</span>
+              <span className="text-sm text-muted sm:text-base">{heroCopy.rolesSupporting}</span>
+            </p>
+
+            <p className="mt-6 max-w-lg border-l-2 border-cyan/40 pl-4 font-display text-base leading-7 text-fg/90 sm:text-lg sm:leading-8" data-reveal style={{ "--reveal-delay": "170ms" } as React.CSSProperties}>
+              {heroCopy.tagline}
+            </p>
+
+            <p className="mt-6 max-w-xl text-[0.9375rem] leading-7 text-muted sm:text-base sm:leading-8" data-reveal style={{ "--reveal-delay": "215ms" } as React.CSSProperties}>
               {heroCopy.intro}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3" data-reveal style={{ "--reveal-delay": "220ms" } as React.CSSProperties}>
+            <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-9" data-reveal style={{ "--reveal-delay": "260ms" } as React.CSSProperties}>
               <Link href="#work" className="group inline-flex min-h-12 items-center gap-3 rounded-full bg-cyan px-5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5">
                 Explore my work <ArrowDownRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
               </Link>
@@ -44,14 +63,19 @@ export default function HomePage() {
                 Download CV <ArrowUpRight size={14} />
               </a>
             </div>
-            <div className="mt-14 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-muted" data-reveal style={{ "--reveal-delay": "280ms" } as React.CSSProperties}>
+            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-muted sm:mt-12" data-reveal style={{ "--reveal-delay": "300ms" } as React.CSSProperties}>
               <span className="inline-flex items-center gap-2"><MapPin size={14} className="text-cyan" />{profile.location}</span>
               <a className="inline-flex items-center gap-2 transition-colors hover:text-fg" href={profile.links.linkedin} target="_blank" rel="noopener noreferrer"><ArrowUpRight size={14} />LinkedIn</a>
               <a className="inline-flex items-center gap-2 transition-colors hover:text-fg" href={profile.links.github} target="_blank" rel="noopener noreferrer"><ArrowUpRight size={14} />GitHub</a>
             </div>
           </div>
 
-          <RoomHero />
+          {/* On phones the room leads, so the interactive centrepiece is reachable
+              without scrolling past the whole bio; the bio keeps the top slot on
+              desktop. `order` swaps placement without duplicating the canvas. */}
+          <div className="order-first lg:order-2">
+            <RoomHero />
+          </div>
         </div>
 
         <div className="container-x absolute bottom-0 left-1/2 hidden -translate-x-1/2 items-center justify-between pb-7 text-[0.65rem] text-muted/70 sm:flex">

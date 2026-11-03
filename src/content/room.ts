@@ -51,11 +51,24 @@ export type RoomObject = {
 };
 
 export const heroCopy = {
-  eyebrow: "ERP Consultant · Software Developer · Tech Explorer",
+  /** Supporting identities, shown after the primary role. */
+  rolesSupporting: "Software Developer · Tech Explorer",
+  /** Primary professional role. Kept separate so it can be styled as the lead. */
+  rolePrimary: "ERP Consultant",
+  /** Short line above the name. */
+  eyebrow: "Enterprise systems · Product-minded engineering",
+  /** Section label for the 3D room, reused as the invitation heading. */
+  roomLabel: "Kelvin's digital room",
+  /** Invitation to interact with the room, shown under the object chips. */
+  roomInvite: {
+    lead: "Step inside the room",
+    body: "Six objects, six parts of the story. Click any object — or use the buttons — to open what it represents.",
+  },
   headlineLead: "ERP, software, and curiosity",
   headlineAccent: "all in one journey.",
+  tagline: "ERP, software, and curiosity — all in one journey.",
   intro:
-    "I'm Kelvin Tan. I spend my days connecting business processes to the systems that run them, and my evenings building things to understand how they work. This room is roughly what that looks like.",
+    "I'm Kelvin Tan. By day I work with ERP systems, helping teams turn the way they actually operate into software that holds up. The rest of the time I'm building things — backend services, small automations, whatever it takes to understand how a system breathes. This room is roughly what that looks like.",
 } as const;
 
 export const roomObjects: RoomObject[] = [
