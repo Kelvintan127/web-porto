@@ -1,15 +1,45 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, ChevronLeft, X } from "lucide-react";
 import { roomObjects, roomObjectMap, heroCopy, type RoomObjectId } from "@/content/room";
 import { HeroVisual } from "@/components/three/hero-visual";
+import { RoomExperience } from "@/components/hero/experience-panel";
+import { idleState, type DemoState } from "@/components/hero/room-experience-types";
+
+const demoKey = (id: RoomObjectId) => `demo:${id}`;
+
+/**
+ * Reads the reduced-motion preference once on mount and follows it live. The
+ * panels and the canvas both need it, so it is read here and passed down rather
+ * than duplicated inside each of them.
+ */
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(query.matches);
+    const onChange = (event: MediaQueryListEvent) => setReduced(event.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
 
 export function RoomHero() {
   const pointer = useRef({ x: 0, y: 0 });
   const [selected, setSelected] = useState<RoomObjectId | null>(null);
   const [hovered, setHovered] = useState<RoomObjectId | null>(null);
+  const reducedMotion = useReducedMotion();
+  /**
+   * Demo state lives here rather than inside the panels, so the canvas can read
+   * it without the panel and the scene needing to know about each other. Each
+   * panel reports only what changed.
+   */
+  const [demos, setDemos] = useState<Record<string, DemoState>>({});
+  /** Bumped by Reset; panels key off it, so a re-open always starts clean. */
+  const [resetKey, setResetKey] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const chipRefs = useRef(new Map<RoomObjectId, HTMLButtonElement>());
   // Where focus should go back to when a card closes; null means the card had no opener.
@@ -18,6 +48,13 @@ export function RoomHero() {
   const reset = useCallback(() => {
     setSelected(null);
     setHovered(null);
+    setDemos({});
+    setResetKey((key) => key + 1);
+  }, []);
+
+  const closePanel = useCallback(() => {
+    setSelected(null);
+    setDemos({});
   }, []);
 
   useEffect(() => {
@@ -45,9 +82,21 @@ export function RoomHero() {
     // Canvas objects have no native focus target. Return to matching chip after close.
     returnFocusRef.current = id;
     setSelected(id);
+    setResetKey((key) => key + 1);
   }, []);
 
+  const reportState = useCallback(
+    (id: RoomObjectId) => (state: DemoState) => {
+      setDemos((current) => ({ ...current, [demoKey(id)]: state }));
+    },
+    [],
+  );
+
   const active = selected ? roomObjectMap[selected] : null;
+  const demoState = useMemo(
+    () => (selected ? demos[demoKey(selected)] ?? idleState() : idleState()),
+    [demos, selected],
+  );
 
   return (
     <section className="relative" aria-labelledby="room-invite-heading">
@@ -63,6 +112,8 @@ export function RoomHero() {
           pointer={pointer}
           selected={selected}
           hovered={hovered}
+          demoState={demoState}
+          resetKey={resetKey}
           onSelect={open}
           onHover={setHovered}
           onReset={reset}
@@ -123,20 +174,40 @@ export function RoomHero() {
               </div>
               <button
                 type="button"
-                onClick={reset}
-                aria-label="Close details and reset camera"
-                className="grid size-9 shrink-0 place-items-center rounded-full border border-line text-muted transition-colors hover:border-cyan/50 hover:text-fg"
+                onClick={closePanel}
+                aria-label={`Back to room: close ${active.label}`}
+                className="grid size-11 shrink-0 place-items-center rounded-full border border-line text-muted transition-colors hover:border-cyan/50 hover:text-fg"
               >
                 <X size={15} />
               </button>
             </div>
-            <Link
-              href={active.href}
-              onClick={reset}
-              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-cyan px-4 text-xs font-semibold text-ink transition-transform hover:-translate-y-0.5"
-            >
-              Go to section <ArrowRight size={14} />
-            </Link>
+
+            <div className="mt-4 border-t border-line/60 pt-4">
+              <RoomExperience
+                objectId={active.id}
+                active={selected === active.id}
+                reducedMotion={reducedMotion}
+                resetKey={resetKey}
+                onState={reportState(active.id)}
+              />
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={reset}
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-xs font-semibold text-fg transition-colors hover:border-cyan/50"
+              >
+                <ChevronLeft size={14} /> Back to room
+              </button>
+              <Link
+                href={active.href}
+                onClick={reset}
+                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-cyan px-4 text-xs font-semibold text-ink transition-transform hover:-translate-y-0.5"
+              >
+                Go to section <ArrowRight size={14} />
+              </Link>
+            </div>
           </div>
         )}
       </div>

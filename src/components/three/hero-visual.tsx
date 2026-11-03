@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import type { RoomObjectId } from "@/content/room";
+import type { DemoState } from "@/components/hero/room-experience-types";
 
 type Pointer = { x: number; y: number };
 
@@ -29,6 +30,8 @@ export function HeroVisual({
   pointer,
   selected,
   hovered,
+  demoState,
+  resetKey,
   onSelect,
   onHover,
   onReset,
@@ -36,15 +39,16 @@ export function HeroVisual({
   pointer: React.RefObject<Pointer>;
   selected: RoomObjectId | null;
   hovered: RoomObjectId | null;
+  demoState: DemoState;
+  /** Bumped by Reset so the scene restarts one-shot animations from a clean slate. */
+  resetKey: number;
   onSelect: (id: RoomObjectId) => void;
   onHover: (id: RoomObjectId | null) => void;
   onReset: () => void;
 }) {
-  const [reduced, setReduced] = useState(false);
   const [webgl, setWebgl] = useState<boolean | null>(null);
 
   useEffect(() => {
-    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     try {
       const canvas = document.createElement("canvas");
       setWebgl(Boolean(canvas.getContext("webgl2") ?? canvas.getContext("webgl")));
@@ -73,7 +77,16 @@ export function HeroVisual({
       const rect = event.currentTarget.getBoundingClientRect();
       pointer.current = { x: ((event.clientX - rect.left) / rect.width - 0.5) * 2, y: ((event.clientY - rect.top) / rect.height - 0.5) * 2 };
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 }; }}>
-      <HeroCanvas reducedMotion={reduced} pointer={pointer} selected={selected} hovered={hovered} onSelect={onSelect} onHover={onHover} onReset={onReset} />
+      <HeroCanvas
+        pointer={pointer}
+        selected={selected}
+        hovered={hovered}
+        demoState={demoState}
+        resetKey={resetKey}
+        onSelect={onSelect}
+        onHover={onHover}
+        onReset={onReset}
+      />
     </div>
   );
 }
