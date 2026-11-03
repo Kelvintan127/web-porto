@@ -3,10 +3,11 @@
  * Kept separate from the scene so copy or anchors can change without touching 3D code.
  * Every href points at a section rendered on the home page (see navItems).
  *
- * Hit volumes are deliberately tight: an oversized invisible box sits nearer the
- * camera in raycast order and swallows clicks meant for the object behind it.
- * Bounds are projected to screen space at the default camera (fov 40, z 4.8) to
- * confirm the six volumes do not meaningfully overlap.
+ * The scene is an orthographic isometric room. An orthographic camera has no
+ * perspective divide, so an object's on-screen size does not depend on its depth.
+ * Hit volumes are therefore authored directly in world units and never need the
+ * old tan(fov/2) * depth projection: two volumes overlap on screen if and only if
+ * they overlap in world space. `size` values are the orthographic half-height.
  */
 
 export type RoomObjectId =
@@ -22,6 +23,8 @@ export type Vec3 = [number, number, number];
 export type CameraPreset = {
   position: Vec3;
   lookAt: Vec3;
+  /** Orthographic half-height in world units. Smaller crops in tighter. */
+  size: number;
 };
 
 export type RoomObject = {
@@ -51,8 +54,8 @@ export const roomObjects: RoomObject[] = [
     short: "ERP",
     blurb: "Where business processes become configurations, document flows, and reports.",
     href: "/#experience",
-    hit: { position: [-0.62, 1.44, -0.46], scale: [0.98, 0.78, 0.2] },
-    camera: { position: [-0.62, 1.5, 2.15], lookAt: [-0.62, 1.42, -0.48] },
+    hit: { position: [-0.3, 1.6, -0.42], scale: [0.92, 0.62, 0.22] },
+    camera: { position: [6.628, 8.528, 6.508], lookAt: [-0.3, 1.6, -0.42], size: 1.15 },
   },
   {
     id: "laptop",
@@ -60,8 +63,8 @@ export const roomObjects: RoomObject[] = [
     short: "Code",
     blurb: "Backend services, REST APIs, and the projects that came out of them.",
     href: "/#work",
-    hit: { position: [0.42, 1.16, -0.32], scale: [0.34, 0.3, 0.52] },
-    camera: { position: [0.45, 1.55, 2.15], lookAt: [0.45, 1.16, -0.32] },
+    hit: { position: [1.0, 1.06, -0.18], scale: [0.6, 0.46, 0.5] },
+    camera: { position: [7.928, 7.988, 6.748], lookAt: [1.0, 1.06, -0.18], size: 0.95 },
   },
   {
     id: "automation",
@@ -69,8 +72,8 @@ export const roomObjects: RoomObject[] = [
     short: "Automation",
     blurb: "Scheduled jobs, integrations, and small automations that remove repetitive work.",
     href: "/#playground",
-    hit: { position: [1, 2, -1.16], scale: [0.82, 0.58, 0.12] },
-    camera: { position: [1, 2.08, 1.05], lookAt: [1, 2, -1.16] },
+    hit: { position: [1.2, 1.9, -1.51], scale: [0.86, 0.74, 0.3] },
+    camera: { position: [8.128, 8.828, 5.418], lookAt: [1.2, 1.9, -1.51], size: 1.05 },
   },
   {
     id: "server",
@@ -78,8 +81,8 @@ export const roomObjects: RoomObject[] = [
     short: "Infra",
     blurb: "Docker, Linux, and CI/CD — where experiments get somewhere reliable to run.",
     href: "/#stack",
-    hit: { position: [1.5, 0.58, -0.8], scale: [0.52, 1.05, 0.48] },
-    camera: { position: [1.42, 1.1, 1.45], lookAt: [1.5, 0.58, -0.8] },
+    hit: { position: [-1.78, 0.62, -0.7], scale: [0.62, 1.14, 0.62] },
+    camera: { position: [5.148, 7.548, 6.228], lookAt: [-1.78, 0.62, -0.7], size: 1.35 },
   },
   {
     id: "iot",
@@ -87,8 +90,8 @@ export const roomObjects: RoomObject[] = [
     short: "IoT",
     blurb: "An ESP32 on a shelf: the lamp switch experiment, and other hardware tangents.",
     href: "/#playground",
-    hit: { position: [-1.4, 2.1, -1.03], scale: [0.4, 0.44, 0.3] },
-    camera: { position: [-1.1, 2.18, 0.45], lookAt: [-1.4, 2.1, -1.03] },
+    hit: { position: [-1.3, 1.65, -1.49], scale: [0.48, 0.34, 0.34] },
+    camera: { position: [5.628, 8.578, 5.438], lookAt: [-1.3, 1.65, -1.49], size: 0.85 },
   },
   {
     id: "avatar",
@@ -96,25 +99,31 @@ export const roomObjects: RoomObject[] = [
     short: "Me",
     blurb: "Computer Science at BINUS University, now working as an ERP Consultant in Jakarta.",
     href: "/#about",
-    hit: { position: [0.72, 1.25, 0.22], scale: [0.44, 1.25, 0.44] },
-    camera: { position: [0.62, 1.5, 2.55], lookAt: [0.56, 1.15, 0.15] },
+    hit: { position: [1.1, 0.92, 1.05], scale: [0.56, 1.44, 0.56] },
+    camera: { position: [8.028, 7.848, 7.978], lookAt: [1.1, 0.92, 1.05], size: 1.45 },
   },
 ];
 
-/** Far enough back that the whole room width (3.7 units) fits a square frame. */
+/**
+ * True isometric framing: 45° azimuth with atan(1/sqrt(2)) elevation, viewed
+ * orthographically. Every preset shares this exact direction vector so focus
+ * moves the crop without ever introducing a dutch angle.
+ */
 export const defaultCamera: CameraPreset = {
-  position: [0, 1.62, 4.8],
-  lookAt: [0, 1.16, 0],
+  position: [6.928, 8.078, 6.728],
+  lookAt: [0, 1.15, -0.2],
+  size: 2.5,
 };
 
 /**
  * Phones render the room in a ~348px square where the wide framing makes every
- * object too small to tap. Closer camera + lower eye line keeps the room and the
- * avatar legible; verified to keep all six hit volumes inside the frame.
+ * object too small to tap. Shifting the look target back keeps all six volumes
+ * in frame at the same size, so a tap target never leaves the canvas.
  */
 export const mobileCamera: CameraPreset = {
-  position: [0, 1.5, 3.6],
-  lookAt: [0, 1.1, 0],
+  position: [6.928, 8.028, 7.028],
+  lookAt: [0, 1.1, 0.1],
+  size: 2.5,
 };
 
 export const roomObjectMap = Object.fromEntries(
