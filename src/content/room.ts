@@ -20,6 +20,17 @@ export type RoomObjectId =
 
 export type Vec3 = [number, number, number];
 
+/**
+ * World-space y of the desk's top face. The desk group in `hero-canvas.tsx`
+ * builds its top from this, and every object standing on the desk is offset
+ * from it, so a change here moves the furniture together instead of leaving
+ * the monitor or laptop hovering.
+ */
+export const DESK_SURFACE_Y = 0.955;
+
+/** World-space centre for something of half-height `halfHeight` sitting on the desk. */
+export const onDesk = (halfHeight: number) => DESK_SURFACE_Y + halfHeight;
+
 export type CameraPreset = {
   position: Vec3;
   lookAt: Vec3;
@@ -54,8 +65,8 @@ export const roomObjects: RoomObject[] = [
     short: "ERP",
     blurb: "Where business processes become configurations, document flows, and reports.",
     href: "/#experience",
-    hit: { position: [-0.3, 1.6, -0.42], scale: [0.92, 0.62, 0.22] },
-    camera: { position: [6.628, 8.528, 6.508], lookAt: [-0.3, 1.6, -0.42], size: 1.15 },
+    hit: { position: [-0.3, 1.548, -0.42], scale: [0.92, 0.62, 0.22] },
+    camera: { position: [6.628, 8.476, 6.508], lookAt: [-0.3, 1.548, -0.42], size: 1.15 },
   },
   {
     id: "laptop",
@@ -63,8 +74,8 @@ export const roomObjects: RoomObject[] = [
     short: "Code",
     blurb: "Backend services, REST APIs, and the projects that came out of them.",
     href: "/#work",
-    hit: { position: [1.0, 1.06, -0.18], scale: [0.6, 0.46, 0.5] },
-    camera: { position: [7.928, 7.988, 6.748], lookAt: [1.0, 1.06, -0.18], size: 0.95 },
+    hit: { position: [1.0, 1.085, -0.18], scale: [0.6, 0.46, 0.5] },
+    camera: { position: [7.928, 8.013, 6.748], lookAt: [1.0, 1.085, -0.18], size: 0.95 },
   },
   {
     id: "automation",

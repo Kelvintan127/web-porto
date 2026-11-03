@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { Vector3 } from "three";
-import { defaultCamera, heroCopy, mobileCamera, roomObjectMap, roomObjects } from "./room";
+import {
+  defaultCamera,
+  DESK_SURFACE_Y,
+  heroCopy,
+  mobileCamera,
+  onDesk,
+  roomObjectMap,
+  roomObjects,
+} from "./room";
 import { navItems } from "./profile";
 
 const isFiniteTriple = (value: number[]) =>
@@ -135,6 +143,28 @@ describe("hero room content", () => {
     expect(Object.keys(roomObjectMap).sort()).toEqual(
       roomObjects.map((object) => object.id).sort(),
     );
+  });
+
+  it("supports desk objects continuously from the desk surface", () => {
+    // Regression: the monitor and laptop were placed from hand-written y values
+    // and floated 5-9 cm above the desk with nothing under them. The fix anchors
+    // screen/deck heights to DESK_SURFACE_Y. What must hold is that the vertical
+    // stack is continuous: each object's hit volume either crosses the desk plane
+    // or sits above it only by the height of the stand that carries it.
+    const STAND_HEIGHT = 0.4; // neck + hinge + base, per Monitor() in hero-canvas.tsx
+    const monitor = roomObjectMap.monitor.hit;
+    const laptop = roomObjectMap.laptop.hit;
+
+    const monitorGap = monitor.position[1] - monitor.scale[1] / 2 - DESK_SURFACE_Y;
+    expect(monitorGap, "monitor screen floats above its stand").toBeGreaterThan(0);
+    expect(monitorGap, "monitor screen floats above its stand").toBeLessThan(STAND_HEIGHT);
+
+    // The laptop deck rests directly on the surface, so its volume crosses it.
+    const laptopBottom = laptop.position[1] - laptop.scale[1] / 2;
+    expect(laptopBottom, "laptop deck floats above the desk").toBeLessThanOrEqual(DESK_SURFACE_Y + 0.02);
+
+    expect(DESK_SURFACE_Y).toBeGreaterThan(0.5);
+    expect(onDesk(0.1)).toBeCloseTo(DESK_SURFACE_Y + 0.1, 6);
   });
 
   it("uses the approved headline verbatim", () => {

@@ -19,7 +19,9 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import {
   defaultCamera,
+  DESK_SURFACE_Y,
   mobileCamera,
+  onDesk,
   roomObjects,
   type CameraPreset,
   type RoomObjectId,
@@ -155,17 +157,38 @@ function RoomShell() {
       {/* Rug. */}
       <Solid position={[0.35, 0.01, 0.45]} scale={[2.4, 0.02, 1.6]} color={COLORS.fabric} radius={0.01} roughness={1} />
 
-      {/* Desk: bevelled top on four real legs, plus a cable tray. */}
-      <Solid position={[0.2, 0.92, -0.35]} scale={[2.7, 0.07, 1.0]} color={COLORS.wood} radius={0.012} metalness={0.05} roughness={0.65} />
-      {([
-        [-0.92, 0.45, -0.73],
-        [1.32, 0.45, -0.73],
-        [-0.92, 0.45, 0.03],
-        [1.32, 0.45, 0.03],
-      ] as Vec3[]).map(([x, y, z]) => (
-        <Rod key={`leg${x}${z}`} position={[x, y, z]} height={0.88} radius={0.028} color={COLORS.line} metalness={0.7} roughness={0.35} />
-      ))}
-      <Solid position={[0.2, 0.74, -0.73]} scale={[2.0, 0.04, 0.16]} color={COLORS.line} radius={0.008} />
+      {/* Desk: an executive pedestal desk. Overhanging bevelled top, recessed
+          apron, two drawer pedestals standing on toe plinths, a modesty panel
+          across the back, and a cable channel with runs escaping behind.
+          Local origin sits at the desk centre; +z faces the chair. */}
+      <group position={[0.2, 0, -0.35]}>
+        <Solid position={[0, DESK_SURFACE_Y - 0.0225, 0]} scale={[2.78, 0.045, 1.04]} color={COLORS.wood} radius={0.014} metalness={0.06} roughness={0.55} />
+        {/* Apron, set back so the top's overhang casts a line. */}
+        <Solid position={[0, 0.865, 0]} scale={[2.56, 0.09, 0.92]} color="#2f2219" radius={0.012} metalness={0.05} roughness={0.7} />
+        {/* Modesty panel bridging the two pedestals at the back. */}
+        <Solid position={[0, 0.505, -0.44]} scale={[1.88, 0.63, 0.03]} color="#2f2219" radius={0.008} metalness={0.05} roughness={0.72} />
+
+        {[-1, 1].map((side) => (
+          <group key={`pedestal${side}`} position={[side * 1.13, 0, 0]}>
+            <Solid position={[0, 0.505, 0]} scale={[0.38, 0.63, 0.92]} color="#33251c" radius={0.012} metalness={0.05} roughness={0.62} />
+            {/* Recessed toe plinth: the pedestal stands, it is not sunk into the floor. */}
+            <Solid position={[0, 0.095, -0.03]} scale={[0.34, 0.19, 0.86]} color="#241a13" radius={0.01} roughness={0.8} />
+            {/* Three drawer faces with bar pulls. */}
+            {[0.735, 0.505, 0.275].map((y) => (
+              <group key={`drawer${y}`}>
+                <Solid position={[0, y, 0.468]} scale={[0.32, 0.185, 0.022]} color="#3a2b22" radius={0.008} metalness={0.05} roughness={0.58} />
+                <Solid position={[0, y, 0.484]} scale={[0.2, 0.016, 0.02]} color={COLORS.metal} radius={0.006} metalness={0.85} roughness={0.25} />
+              </group>
+            ))}
+          </group>
+        ))}
+
+        {/* Cable channel under the apron, with runs dropping out of sight. */}
+        <Solid position={[0, 0.775, -0.3]} scale={[1.8, 0.07, 0.16]} color="#241a13" radius={0.01} roughness={0.75} />
+        {([[-0.5, 0.19], [-0.14, 0.23], [0.24, 0.27]] as [number, number][]).map(([x, height]) => (
+          <Rod key={`cable${x}`} position={[x, 0.74 - height / 2, -0.34]} height={height} radius={0.011} color="#1b2536" metalness={0.2} roughness={0.6} />
+        ))}
+      </group>
     </group>
   );
 }
@@ -174,7 +197,9 @@ function RoomShell() {
 
 function Monitor() {
   return (
-    <group position={[-0.3, 1.6, -0.42]}>
+    // 0.5925 = the stand base's half-thickness plus its offset; the group origin
+    // is the screen centre, so this sits the base flat on the desk.
+    <group position={[-0.3, onDesk(0.5925), -0.42]}>
       <Solid position={[0, 0, 0]} scale={[1.16, 0.72, 0.06]} color="#0a1220" radius={0.015} metalness={0.3} roughness={0.5} />
       <Solid
         position={[0, 0, 0.035]}
@@ -208,7 +233,8 @@ function Monitor() {
 
 function Laptop() {
   return (
-    <group position={[1.0, 1.06, -0.18]} rotation={[0, -0.3, 0]}>
+    // Deck underside (0.0175 half-thickness) rests on the desk surface.
+    <group position={[1.0, onDesk(0.0175), -0.18]} rotation={[0, -0.3, 0]}>
       <Solid position={[0, 0, 0]} scale={[0.78, 0.035, 0.54]} color={COLORS.line} radius={0.01} metalness={0.55} roughness={0.42} />
       {/* Keycap grid: 4 x 9. */}
       {Array.from({ length: 4 }).flatMap((_, row) =>
