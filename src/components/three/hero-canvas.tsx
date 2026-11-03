@@ -342,33 +342,204 @@ function IoTShelf() {
   );
 }
 
-function AvatarPlaceholder() {
+/**
+ * The "Me" object. A stylised seated figure on a real office chair: five-star
+ * base with casters, gas cylinder, cushion, armrests, and an articulated body.
+ * Colours come from the reference photo (skin, dark hair, light shirt) but no
+ * facial features are modelled.
+ *
+ * Interactive: the head tracks the pointer, the chest breathes, and hovering
+ * raises the arm into a wave. All of it stops under reduced motion.
+ */
+function AvatarFigure({
+  pointer,
+  reducedMotion,
+  active,
+  hovered,
+}: {
+  pointer: React.RefObject<Pointer>;
+  reducedMotion: boolean;
+  active: boolean;
+  hovered: boolean;
+}) {
+  const head = useRef<THREE.Group>(null);
+  const torso = useRef<THREE.Group>(null);
+  const waveArm = useRef<THREE.Group>(null);
+
+  useFrame((state, delta) => {
+    const t = state.clock.elapsedTime;
+
+    if (reducedMotion) {
+      head.current?.rotation.set(0, 0, 0);
+      torso.current?.rotation.set(active ? 0.1 : 0, 0, 0);
+      torso.current?.scale.set(1, 1, 1);
+      waveArm.current?.rotation.set(0, 0, 0);
+      return;
+    }
+
+    // Head tracks the pointer, clamped so it never turns unnaturally far.
+    const yaw = Math.max(-0.42, Math.min(0.42, pointer.current.x * 0.5));
+    const pitch = Math.max(-0.16, Math.min(0.14, -pointer.current.y * 0.22));
+    if (head.current) {
+      head.current.rotation.y += (yaw - head.current.rotation.y) * Math.min(1, delta * 6);
+      head.current.rotation.x += (pitch - head.current.rotation.x) * Math.min(1, delta * 6);
+    }
+
+    // Breathing, plus a small lean toward the desk when this object is selected.
+    const lean = active ? 0.12 : 0;
+    if (torso.current) {
+      torso.current.rotation.x += (lean - torso.current.rotation.x) * Math.min(1, delta * 5);
+      const breath = 1 + Math.sin(t * 1.6) * 0.012;
+      torso.current.scale.set(1, breath, 1);
+    }
+
+    // Hover: lift the arm and wave it.
+    const wave = hovered ? -1.25 + Math.sin(t * 6.5) * 0.18 : 0;
+    if (waveArm.current) {
+      waveArm.current.rotation.z += (wave - waveArm.current.rotation.z) * Math.min(1, delta * 7);
+    }
+  });
+
+  const skin = "#d9ac90";
+  const hair = "#201814";
+
   return (
     <group position={[1.1, 0.92, 1.05]} rotation={[0, -0.85, 0]}>
-      {/* Office chair, so the figure reads as seated rather than floating. */}
-      <Rod position={[0, -0.32, -0.18]} height={0.06} radius={0.24} color={COLORS.fabric} metalness={0.1} roughness={0.95} />
-      <Rod position={[0, -0.14, -0.2]} height={0.3} radius={0.045} color={COLORS.metal} metalness={0.8} roughness={0.3} />
-      <Solid position={[0, 0.02, -0.24]} scale={[0.44, 0.5, 0.08]} color={COLORS.fabric} radius={0.06} metalness={0.1} roughness={0.95} />
-      <mesh position={[0, 0.3, -0.06]} castShadow receiveShadow>
-        <capsuleGeometry args={[0.2, 0.42, 8, 16]} />
-        <meshStandardMaterial color="#38506e" roughness={0.8} metalness={0.05} />
-      </mesh>
-      <mesh position={[0, 0.76, -0.04]} castShadow receiveShadow>
-        <icosahedronGeometry args={[0.19, 2]} />
-        <meshStandardMaterial color="#7c8ea6" roughness={0.7} metalness={0.05} />
-      </mesh>
+      {/* Chair mat under the whole thing. */}
+      <Solid position={[0, -0.905, 0.04]} scale={[0.74, 0.02, 0.74]} color="#16233a" radius={0.01} roughness={0.95} />
+
+      {/* Five-star base: legs radiating from the hub, each ending in a caster. */}
+      {[0, 72, 144, 216, 288].map((deg) => {
+        const rad = (deg * Math.PI) / 180;
+        return (
+          <group key={`star${deg}`}>
+            <Solid
+              position={[Math.sin(rad) * 0.13, -0.87, Math.cos(rad) * 0.13]}
+              scale={[0.26, 0.032, 0.05]}
+              rotation={[0, -rad, 0]}
+              color="#2a3a52"
+              radius={0.01}
+              metalness={0.6}
+              roughness={0.4}
+            />
+            <mesh position={[Math.sin(rad) * 0.25, -0.885, Math.cos(rad) * 0.25]} castShadow>
+              <sphereGeometry args={[0.033, 12, 12]} />
+              <meshStandardMaterial color="#0f172a" roughness={0.6} metalness={0.2} />
+            </mesh>
+          </group>
+        );
+      })}
+
+      {/* Gas cylinder, seat plate, cushion. */}
+      <Rod position={[0, -0.75, 0]} height={0.24} radius={0.045} color="#8fa3bd" metalness={0.85} roughness={0.3} />
+      <Rod position={[0, -0.63, 0]} height={0.06} radius={0.06} color="#1e293b" metalness={0.5} roughness={0.5} />
+      <Solid position={[0, -0.57, 0]} scale={[0.44, 0.05, 0.42]} color="#233049" radius={0.012} metalness={0.4} roughness={0.5} />
+      <Solid position={[0, -0.53, 0]} scale={[0.47, 0.09, 0.45]} color="#1e293b" radius={0.045} metalness={0.08} roughness={0.95} />
+
+      {/* Backrest, lumbar pad and headrest. */}
+      <Solid position={[0, -0.16, -0.25]} scale={[0.43, 0.56, 0.09]} color="#1e293b" radius={0.05} rotation={[-0.08, 0, 0]} metalness={0.08} roughness={0.95} />
+      <Solid position={[0, -0.3, -0.2]} scale={[0.3, 0.16, 0.06]} color="#26344d" radius={0.03} rotation={[-0.08, 0, 0]} metalness={0.08} roughness={0.95} />
+      <Solid position={[0, 0.14, -0.27]} scale={[0.26, 0.1, 0.06]} color="#1e293b" radius={0.03} rotation={[-0.08, 0, 0]} metalness={0.08} roughness={0.95} />
+
+      {/* Armrests: post plus pad, bent forward at the elbow rest. */}
       {[-1, 1].map((side) => (
-        <mesh key={`arm${side}`} position={[side * 0.22, 0.34, 0.1]} rotation={[0.5, 0, side * 0.18]} castShadow>
-          <capsuleGeometry args={[0.055, 0.3, 6, 10]} />
-          <meshStandardMaterial color="#2c3f58" roughness={0.85} />
-        </mesh>
+        <group key={`armrest${side}`} position={[side * 0.27, -0.44, -0.04]}>
+          <Solid position={[0, -0.06, 0]} scale={[0.035, 0.2, 0.035]} color="#8fa3bd" radius={0.01} metalness={0.8} roughness={0.3} />
+          <Solid position={[0, 0.05, 0.04]} scale={[0.06, 0.035, 0.24]} color="#2a3a52" radius={0.015} metalness={0.4} roughness={0.6} />
+        </group>
       ))}
+
+      {/* Seated figure. Legs stay put; torso and up lean as one unit. */}
       {[-1, 1].map((side) => (
-        <mesh key={`shin${side}`} position={[side * 0.1, 0.02, 0.16]} rotation={[0.7, 0, 0]} castShadow>
-          <capsuleGeometry args={[0.07, 0.34, 6, 10]} />
-          <meshStandardMaterial color="#1e293b" roughness={0.9} />
-        </mesh>
+        <group key={`leg${side}`}>
+          {/* Thigh, angled forward off the seat. */}
+          <mesh position={[side * 0.11, -0.45, 0.14]} rotation={[1.35, 0, 0]} castShadow>
+            <capsuleGeometry args={[0.078, 0.24, 6, 14]} />
+            <meshStandardMaterial color="#1e293b" roughness={0.9} />
+          </mesh>
+          {/* Shin down to the floor. */}
+          <mesh position={[side * 0.12, -0.72, 0.24]} rotation={[0.18, 0, 0]} castShadow>
+            <capsuleGeometry args={[0.062, 0.24, 6, 14]} />
+            <meshStandardMaterial color="#1e293b" roughness={0.9} />
+          </mesh>
+          {/* Shoe. */}
+          <Solid position={[side * 0.12, -0.885, 0.3]} scale={[0.12, 0.06, 0.22]} color="#0f172a" radius={0.02} roughness={0.85} />
+        </group>
       ))}
+
+      <group ref={torso}>
+        {/* Hips. */}
+        <Solid position={[0, -0.47, 0.02]} scale={[0.32, 0.17, 0.28]} color="#1e293b" radius={0.05} roughness={0.9} />
+
+        {/* Torso: chest block plus a shoulder yoke, in the light shirt colour. */}
+        <Solid position={[0, -0.26, -0.02]} scale={[0.34, 0.36, 0.22]} color="#9aa3ad" radius={0.07} roughness={0.85} />
+        <Solid position={[0, -0.1, -0.02]} scale={[0.4, 0.14, 0.22]} color="#9aa3ad" radius={0.06} roughness={0.85} />
+        {/* Collar and placket. */}
+        <Solid position={[0, -0.03, 0.08]} scale={[0.16, 0.08, 0.04]} color="#dbe2e8" radius={0.012} roughness={0.9} />
+        <Solid position={[0, -0.24, 0.1]} scale={[0.02, 0.28, 0.01]} color="#808a95" radius={0.004} shadow={false} />
+        {/* Lanyard and badge. */}
+        <Rod position={[-0.05, -0.16, 0.104]} height={0.14} radius={0.005} color="#64e9d0" rotation={[0, 0, 0.22]} metalness={0.2} />
+        <Rod position={[0.05, -0.16, 0.104]} height={0.14} radius={0.005} color="#64e9d0" rotation={[0, 0, -0.22]} metalness={0.2} />
+        <Solid position={[0, -0.25, 0.108]} scale={[0.09, 0.07, 0.008]} color="#f8fafc" radius={0.006} roughness={0.5} />
+
+        {/* Left arm, resting on the armrest. */}
+        <group position={[-0.2, -0.12, -0.02]} rotation={[0.15, 0, -0.12]}>
+          <mesh position={[0, -0.09, 0]} castShadow>
+            <capsuleGeometry args={[0.055, 0.16, 6, 12]} />
+            <meshStandardMaterial color="#9aa3ad" roughness={0.85} />
+          </mesh>
+          <mesh position={[0, -0.25, 0.06]} rotation={[0.7, 0, 0]} castShadow>
+            <capsuleGeometry args={[0.045, 0.16, 6, 12]} />
+            <meshStandardMaterial color={skin} roughness={0.7} />
+          </mesh>
+          <mesh position={[0, -0.32, 0.14]} castShadow>
+            <sphereGeometry args={[0.052, 12, 12]} />
+            <meshStandardMaterial color={skin} roughness={0.7} />
+          </mesh>
+        </group>
+
+        {/* Right arm: the group that waves when hovered. */}
+        <group ref={waveArm} position={[0.2, -0.12, -0.02]} rotation={[0.15, 0, 0.12]}>
+          <mesh position={[0, -0.09, 0]} castShadow>
+            <capsuleGeometry args={[0.055, 0.16, 6, 12]} />
+            <meshStandardMaterial color="#9aa3ad" roughness={0.85} />
+          </mesh>
+          <mesh position={[0, -0.25, 0.06]} rotation={[0.7, 0, 0]} castShadow>
+            <capsuleGeometry args={[0.045, 0.16, 6, 12]} />
+            <meshStandardMaterial color={skin} roughness={0.7} />
+          </mesh>
+          <mesh position={[0, -0.32, 0.14]} castShadow>
+            <sphereGeometry args={[0.052, 12, 12]} />
+            <meshStandardMaterial color={skin} roughness={0.7} />
+          </mesh>
+        </group>
+
+        {/* Neck and head. The head group is what turns toward the pointer. */}
+        <Rod position={[0, 0, -0.01]} height={0.09} radius={0.05} color={skin} metalness={0.02} roughness={0.75} />
+        <group ref={head} position={[0, 0.05, -0.01]}>
+          <mesh position={[0, 0.13, 0]} castShadow receiveShadow>
+            <sphereGeometry args={[0.155, 24, 20]} />
+            <meshStandardMaterial color={skin} roughness={0.7} metalness={0.02} />
+          </mesh>
+          {/* Ears. */}
+          {[-1, 1].map((side) => (
+            <mesh key={`ear${side}`} position={[side * 0.152, 0.12, 0]} castShadow>
+              <sphereGeometry args={[0.038, 10, 10]} />
+              <meshStandardMaterial color={skin} roughness={0.75} />
+            </mesh>
+          ))}
+          {/* Hair: cap over the crown plus a shorter block at the back. */}
+          <mesh position={[0, 0.185, -0.012]} scale={[1.03, 0.86, 1.03]} castShadow>
+            <sphereGeometry args={[0.158, 20, 16]} />
+            <meshStandardMaterial color={hair} roughness={0.85} />
+          </mesh>
+          <Solid position={[0, 0.09, -0.1]} scale={[0.24, 0.2, 0.1]} color={hair} radius={0.05} roughness={0.85} />
+          {/* Tidy sideburns so the hair block does not look like a floating band. */}
+          {[-1, 1].map((side) => (
+            <Solid key={`side${side}`} position={[side * 0.13, 0.16, -0.02]} scale={[0.035, 0.11, 0.14]} color={hair} radius={0.012} roughness={0.85} />
+          ))}
+        </group>
+      </group>
     </group>
   );
 }
@@ -515,7 +686,12 @@ function Scene({
       <AutomationPanel />
       <ServerRack ledRef={led} />
       <IoTShelf />
-      <AvatarPlaceholder />
+      <AvatarFigure
+        pointer={pointer}
+        reducedMotion={reducedMotion}
+        active={selected === "avatar"}
+        hovered={hovered === "avatar"}
+      />
 
       {/* Floor lamp: pole, weighted base, emissive shade. */}
       <Rod position={[1.95, 1.15, -1.45]} height={1.6} radius={0.022} color={COLORS.metal} metalness={0.85} roughness={0.3} />
