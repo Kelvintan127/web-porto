@@ -38,13 +38,13 @@ beforeEach(() => {
   sendMail.mockReset();
   resetRateLimits();
   resetDuplicateSubmissions();
-  process.env.MAIL_HOST = "smtp.mx.cloudflare.net";
+  process.env.MAIL_HOST = "smtp.resend.com";
   process.env.MAIL_PORT = "465";
-  process.env.MAIL_USERNAME = "api_token";
-  process.env.MAIL_PASSWORD = "freshly-rotated-test-secret";
-  process.env.MAIL_SCHEME = "ssl";
+  process.env.MAIL_USERNAME = "resend";
+  process.env.MAIL_PASSWORD = "re_test_key_not_real";
+  process.env.MAIL_SCHEME = "smtps";
   process.env.MAIL_FROM_ADDRESS = "noreply@klveen.com";
-  process.env.MAIL_FROM_NAME = "KLVEEN";
+  process.env.MAIL_FROM_NAME = "KLVEEN Contact";
   process.env.CONTACT_TO_EMAIL = "support@klveen.com";
   delete process.env.TURNSTILE_SECRET_KEY;
   delete process.env.UPSTASH_REDIS_REST_URL;
@@ -69,9 +69,11 @@ describe("POST /api/contact — success path", () => {
 
     const mail = sendMail.mock.calls[0][0];
     expect(mail.to).toBe("support@klveen.com");
-    expect(mail.from).toEqual({ name: "KLVEEN", address: "noreply@klveen.com" });
+    expect(mail.from).toEqual({ name: "KLVEEN Contact", address: "noreply@klveen.com" });
     expect(mail.replyTo).toBe("visitor@example.com");
-    expect(mail.subject).toBe("[KLVEEN Portfolio] Project inquiry");
+    expect(mail.subject).toBe("New Contact Message — KLVEEN Portfolio");
+    // Envelope sender pinned to our own address, not the visitor's.
+    expect(mail.envelope).toEqual({ from: "noreply@klveen.com", to: "support@klveen.com" });
     expect(mail.text).toContain("A message that is long enough to be believable.");
     expect(mail.html).toContain("<!doctype html>");
   });
@@ -92,6 +94,7 @@ describe("POST /api/contact — success path", () => {
     expect(mail.to).toBe("support@klveen.com");
     expect(mail.from.address).toBe("noreply@klveen.com");
     expect(mail.replyTo).toBe("visitor@example.com");
+    expect(mail.envelope.from).toBe("noreply@klveen.com");
   });
 });
 
@@ -159,7 +162,7 @@ describe("POST /api/contact — failure handling", () => {
     expect(serialised).not.toContain("535");
     expect(serialised).not.toContain("api_token");
     expect(serialised).not.toContain("smtp.mx.cloudflare.net");
-    expect(serialised).not.toContain("freshly-rotated-test-secret");
+    expect(serialised).not.toContain("re_test_key_not_real");
   });
 
   it("returns 503 when SMTP is not configured at all", async () => {
@@ -219,8 +222,59 @@ describe("POST /api/contact — abuse controls", () => {
     await POST(request(VALID_BODY, "203.0.113.99"));
 
     const logged = errorSpy.mock.calls.flat().join(" ");
-    expect(logged).not.toContain("freshly-rotated-test-secret");
+    expect(logged).not.toContain("re_test_key_not_real");
     expect(logged).not.toContain("visitor@example.com");
+    errorSpy.mockRestore();
+  });
+});
+
+describe("POST /api/contact — provider failure modes", () => {
+  it("handles an unverified sender domain without leaking the provider message", async () => {
+    sendMail.mockRejectedValue(
+      new Error("550 5.7.1 Not authorized to send from domain klveen.com"),
+    );
+    const response = await POST(request(VALID_BODY, "203.0.113.201"));
+    const payload = await response.json();
+    expect(response.status).toBe(503);
+    expect(JSON.stringify(payload)).not.toContain("550");
+    expect(JSON.stringify(payload)).not.toContain("klveen.com\",");
+  });
+
+  it("handles an authentication failure without leaking the API key", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    sendMail.mockRejectedValue(new Error("535 Authentication failed: invalid API key re_test_key_not_real"));
+
+    const response = await POST(request(VALID_BODY, "203.0.113.202"));
+    expect(response.status).toBe(503);
+    expect(JSON.stringify(await response.json())).not.toContain("re_test_key_not_real");
+    expect(errorSpy.mock.calls.flat().join(" ")).not.toContain("re_test_key_not_real");
+    errorSpy.mockRestore();
+  });
+
+  it("logs a diagnostic label for each failure class", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const cases: [string, string][] = [
+      ["550 5.7.1 Not authorized to send from domain klveen.com", "sender-or-domain-rejected"],
+      ["535 5.7.8 Authentication failed", "authentication-failed"],
+      ["connect ETIMEDOUT 1.2.3.4:465", "connection-failed"],
+      ["554 5.7.1 Message rejected", "recipient-or-policy-rejected"],
+    ];
+    let ip = 10;
+    for (const [message, label] of cases) {
+      sendMail.mockRejectedValueOnce(new Error(message));
+      await POST(request({ ...VALID_BODY, subject: `Class ${ip}` }, `203.0.114.${ip++}`));
+      expect(errorSpy.mock.calls.flat().join(" "), message).toContain(label);
+    }
+    errorSpy.mockRestore();
+  });
+
+  it("never logs the visitor's message body", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    sendMail.mockRejectedValue(new Error("550 rejected"));
+    await POST(
+      request({ ...VALID_BODY, message: "SECRET-BODY-MARKER" }, "203.0.113.203"),
+    );
+    expect(errorSpy.mock.calls.flat().join(" ")).not.toContain("SECRET-BODY-MARKER");
     errorSpy.mockRestore();
   });
 });

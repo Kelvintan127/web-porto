@@ -6,7 +6,7 @@ import {
   consumeRateLimit,
   isDuplicateSubmission,
 } from "@/lib/rate-limit";
-import { getTransporter, mailConfigFromEnv } from "@/lib/mailer";
+import { classifySmtpError, getTransporter, mailConfigFromEnv, redactSecrets } from "@/lib/mailer";
 
 /**
  * POST /api/contact
@@ -123,6 +123,9 @@ export async function POST(request: Request) {
     const transporter = getTransporter(config);
     await transporter.sendMail({
       from: { name: config.from.name, address: config.from.address },
+      // Envelope sender pinned to the configured address, so a provider cannot
+      // substitute the visitor's address as the bounce path.
+      envelope: { from: config.envelopeFrom, to: config.to },
       to: config.to,
       replyTo: validation.data.email,
       subject: content.subject,
@@ -130,8 +133,10 @@ export async function POST(request: Request) {
       html: content.html,
     });
   } catch (error) {
-    // Log shape only, never payload or credentials.
-    console.error("[contact] send failed:", error instanceof Error ? error.message.split("\n")[0] : "unknown");
+    // Diagnostic label and the provider's message head only. Never credentials,
+    // never the visitor's message body.
+    const head = error instanceof Error ? error.message.split("\n")[0].slice(0, 200) : "unknown";
+    console.error(`[contact] send failed: ${classifySmtpError(error)} — ${redactSecrets(head)}`);
     return serviceUnavailable();
   }
 

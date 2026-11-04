@@ -148,10 +148,11 @@ export function escapeHtml(value: string): string {
 
 export const SUBJECT_PREFIX = "[KLVEEN Portfolio]";
 
-/** Header-safe subject. Input is already control-char-free; this is belt and braces. */
-export function buildSubject(subject: string): string {
-  return `${SUBJECT_PREFIX} ${subject.replace(/[\r\n]+/g, " ").slice(0, CONTACT_LIMITS.subject)}`;
-}
+/**
+ * Fixed subject line. The visitor's own subject travels in the body instead, so
+ * nothing they type can reshape the header we send.
+ */
+export const CONTACT_SUBJECT = "New Contact Message — KLVEEN Portfolio";
 
 export type MailContent = { subject: string; text: string; html: string };
 
@@ -193,5 +194,5 @@ export function buildMailContent(data: ContactPayload): MailContent {
   </table>
 </body></html>`;
 
-  return { subject: buildSubject(subject), text, html };
+  return { subject: CONTACT_SUBJECT, text, html };
 }

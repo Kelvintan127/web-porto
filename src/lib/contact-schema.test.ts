@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   buildMailContent,
-  buildSubject,
+  CONTACT_SUBJECT,
   escapeHtml,
   hasControlChars,
   isValidEmail,
@@ -128,13 +128,11 @@ describe("escapeHtml", () => {
   });
 });
 
-describe("buildSubject", () => {
-  it("prefixes the subject", () => {
-    expect(buildSubject("Project inquiry")).toBe("[KLVEEN Portfolio] Project inquiry");
-  });
-
-  it("strips CRLF even if it somehow reached this layer", () => {
-    expect(buildSubject("a\r\nBcc: x@y.co")).toBe("[KLVEEN Portfolio] a Bcc: x@y.co");
+describe("subject", () => {
+  it("is a fixed line, so the visitor cannot reshape the header", () => {
+    expect(CONTACT_SUBJECT).toBe("New Contact Message — KLVEEN Portfolio");
+    // The visitor's own subject travels in the body instead.
+    expect(buildMailContent({ ...VALID, subject: "Totally different" }).subject).toBe(CONTACT_SUBJECT);
   });
 });
 
@@ -155,8 +153,8 @@ describe("buildMailContent", () => {
     expect(malicious.text).toContain("<img src=x onerror=alert(1)>");
   });
 
-  it("does not let the visitor influence the subject prefix", () => {
-    expect(content.subject.startsWith("[KLVEEN Portfolio]")).toBe(true);
+  it("does not let the visitor influence the subject", () => {
+    expect(content.subject).toBe(CONTACT_SUBJECT);
   });
 });
 
