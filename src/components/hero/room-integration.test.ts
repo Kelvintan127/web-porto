@@ -128,10 +128,52 @@ describe("no stray dependencies", () => {
       dependencies: Record<string, string>;
       devDependencies: Record<string, string>;
     };
-    const allowed = ["@react-three/fiber", "lucide-react", "next", "react", "react-dom", "three"];
+    // nodemailer is required by the contact form spec; nothing else may appear.
+    const allowed = ["@react-three/fiber", "lucide-react", "next", "nodemailer", "react", "react-dom", "three"];
     expect(Object.keys(pkg.dependencies).sort()).toEqual([...allowed].sort());
     for (const version of Object.values({ ...pkg.dependencies, ...pkg.devDependencies })) {
       expect(version).not.toMatch(/^(\^|~|\*|latest)/);
+    }
+  });
+
+  it("keeps every mail variable off the client bundle", () => {
+    // Any NEXT_PUBLIC_ mail variable would be inlined into client JS by Next,
+    // publishing the SMTP credential to every visitor.
+    const envKeys = [
+      "MAIL_HOST",
+      "MAIL_PORT",
+      "MAIL_USERNAME",
+      "MAIL_PASSWORD",
+      "MAIL_SCHEME",
+      "MAIL_FROM_ADDRESS",
+      "MAIL_FROM_NAME",
+      "CONTACT_TO_EMAIL",
+      "TURNSTILE_SECRET_KEY",
+      "UPSTASH_REDIS_REST_TOKEN",
+    ];
+    const files = [
+      "lib/mailer.ts",
+      "lib/contact-schema.ts",
+      "lib/rate-limit.ts",
+      "app/api/contact/route.ts",
+      "components/contact-form.tsx",
+    ];
+    for (const file of files) {
+      const source = readFileSync(join(SRC, file), "utf8");
+      for (const key of envKeys) {
+        expect(source, `${file} must not reference NEXT_PUBLIC_${key}`).not.toContain(`NEXT_PUBLIC_${key}`);
+      }
+    }
+  });
+
+  it("keeps the mailer out of every client component", () => {
+    // Node built-ins in a client bundle fail the build; catching the import
+    // here names the culprit file instead of a webpack hash.
+    const clientFiles = ["components/contact-form.tsx", "components/contact-panel.tsx"];
+    for (const file of clientFiles) {
+      const source = readFileSync(join(SRC, file), "utf8");
+      expect(source, `${file} must not import the mailer`).not.toContain("lib/mailer");
+      expect(source, `${file} must not import nodemailer`).not.toContain("nodemailer");
     }
   });
 });

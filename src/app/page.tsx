@@ -7,6 +7,7 @@ import { featuredProjects } from "@/content/projects";
 import { experience, journey, skillGroups } from "@/content/career";
 import { ProjectShowcase } from "@/components/project-showcase";
 import { ContactPanel } from "@/components/contact-panel";
+import { ContactForm } from "@/components/contact-form";
 import { SkillExplorer } from "@/components/skill-explorer";
 import { Playground } from "@/components/playground";
 import { SectionHeading } from "@/components/section-heading";
@@ -58,6 +59,9 @@ export default function HomePage() {
               </Link>
               <Link href="#about" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:border-cyan/50">
                 Get to know me <ArrowRight size={15} />
+              </Link>
+              <Link href="#contact" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-cyan/45 px-5 text-sm font-medium text-fg transition-colors hover:border-cyan hover:text-cyan">
+                Let’s Talk
               </Link>
               <a href={profile.cvPath} download className="inline-flex min-h-12 items-center gap-2 px-3 text-sm text-muted transition-colors hover:text-fg">
                 Download CV <ArrowUpRight size={14} />
@@ -189,10 +193,20 @@ export default function HomePage() {
       <section id="contact" className="scroll-mt-20 border-t border-line/70 bg-[radial-gradient(ellipse_at_50%_100%,rgba(100,233,208,0.07),transparent_48%)] py-24 sm:py-32">
         <div className="container-x grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div data-reveal>
-            <SectionHeading eyebrow="Get in touch" title="Let’s connect." />
-            <p className="mt-5 max-w-md text-sm leading-7 text-muted">Whether it’s a project, a technical discussion, or just a conversation about technology, feel free to reach out.</p>
+            <SectionHeading eyebrow="Get in touch" title="Let’s build something together." />
+            <p className="mt-5 max-w-md text-sm leading-7 text-muted">Have a project, an opportunity, or just want to talk tech? I’d love to hear from you.</p>
+            <p className="mt-6 text-sm leading-7 text-muted">
+              Prefer email? Write to{" "}
+              <a
+                href={`mailto:${profile.supportEmail}`}
+                className="font-medium text-cyan underline decoration-cyan/40 underline-offset-4 transition-colors hover:decoration-cyan"
+              >
+                {profile.supportEmail}
+              </a>
+            </p>
           </div>
-          <div data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+          <div className="space-y-5" data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+            <ContactForm />
             <ContactPanel />
           </div>
         </div>

@@ -13,6 +13,8 @@ export const profile = {
     "I work where business processes meet software. Currently an ERP consultant with a background in backend and full-stack development — most at home turning how a company actually operates into systems that hold up.",
   location: "Jakarta, Indonesia",
   email: "kelvintan127.kt@gmail.com",
+  /** Address the contact form delivers to. Fixed server-side too; see docs/contact-setup.md. */
+  supportEmail: "support@klveen.com",
   cvPath: "/assets/Kelvin Tan CV.pdf",
   links: {
     github: "https://github.com/kelvintan127",
