@@ -6,7 +6,6 @@ import { profile, about } from "@/content/profile";
 import { featuredProjects } from "@/content/projects";
 import { experience, journey, skillGroups } from "@/content/career";
 import { ProjectShowcase } from "@/components/project-showcase";
-import { ContactPanel } from "@/components/contact-panel";
 import { ContactForm } from "@/components/contact-form";
 import { SkillExplorer } from "@/components/skill-explorer";
 import { Playground } from "@/components/playground";
@@ -205,9 +204,8 @@ export default function HomePage() {
               </a>
             </p>
           </div>
-          <div className="space-y-5" data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+          <div data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
             <ContactForm />
-            <ContactPanel />
           </div>
         </div>
       </section>

@@ -169,7 +169,7 @@ describe("no stray dependencies", () => {
   it("keeps the mailer out of every client component", () => {
     // Node built-ins in a client bundle fail the build; catching the import
     // here names the culprit file instead of a webpack hash.
-    const clientFiles = ["components/contact-form.tsx", "components/contact-panel.tsx"];
+    const clientFiles = ["components/contact-form.tsx"];
     for (const file of clientFiles) {
       const source = readFileSync(join(SRC, file), "utf8");
       expect(source, `${file} must not import the mailer`).not.toContain("lib/mailer");
